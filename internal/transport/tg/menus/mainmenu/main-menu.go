@@ -7,12 +7,12 @@ import (
 	"gitM8/internal/transport/tg/handlers/register"
 )
 
-const Command = "menu"
+const Command = "/menu"
 
 func NewMainMenu() interfaces.Menu {
-	m := menu.NewSimple(Command, "Main menu")
+	m := menu.NewSimple("Main menu", Command)
 
-	m.AddButton(register.Command, "Register")
+	m.AddButton("Register", register.Command)
 
 	return m
 }

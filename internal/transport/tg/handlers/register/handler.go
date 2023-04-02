@@ -5,7 +5,7 @@ import (
 	"github.com/AlexSkilled/go_tg/model"
 )
 
-const Command = "register"
+const Command = "/register"
 
 type MainMenu struct {
 }

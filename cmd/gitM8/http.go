@@ -15,7 +15,7 @@ func apiEntryPoint(ctx context.Context, cfg *config.Config) func(context.Context
 	mngr := transport.NewManager()
 
 	mngr.AddServer(rest_api.NewServer(cfg))
-	mngr.AddServer(tg.New())
+	mngr.AddServer(tg.New(cfg))
 	go func() {
 		err := mngr.Start(ctx)
 		if err != nil {

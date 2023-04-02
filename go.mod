@@ -22,3 +22,8 @@ require (
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 )
+
+
+replace (
+	github.com/AlexSkilled/go_tg => /Users/alexbukov/Yandex.Disk.localized/redsock/go_tg
+)
