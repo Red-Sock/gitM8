@@ -6,6 +6,7 @@ import (
 
 	"gitM8/internal/config"
 	"gitM8/internal/transport"
+	"gitM8/internal/transport/tg"
 
 	"gitM8/internal/transport/rest_api"
 )
@@ -14,6 +15,7 @@ func apiEntryPoint(ctx context.Context, cfg *config.Config) func(context.Context
 	mngr := transport.NewManager()
 
 	mngr.AddServer(rest_api.NewServer(cfg))
+	mngr.AddServer(tg.New())
 	go func() {
 		err := mngr.Start(ctx)
 		if err != nil {

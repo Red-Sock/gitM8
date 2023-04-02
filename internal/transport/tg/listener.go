@@ -2,29 +2,25 @@ package tg
 
 import (
 	"github.com/AlexSkilled/go_tg/client"
-	tginterfaces "github.com/AlexSkilled/go_tg/interfaces"
+
+	"gitM8/internal/config"
+	"gitM8/internal/transport/tg/menus/mainmenu"
 )
 
 type Server struct {
 	bot *client.Bot
 }
 
-type CreateRequest struct {
-	Handlers    map[string]tginterfaces.CommandHandler
-	Credentials string
-	Menus       []tginterfaces.Menu
-}
-
-func New(req CreateRequest) (s *Server) {
+func New(cfg *config.Config) (s *Server) {
 	s = &Server{}
-	s.bot = client.NewBot(req.Credentials)
+	s.bot = client.NewBot(cfg.GetString(config.Server))
 
-	for name, impl := range req.Handlers {
-		s.bot.AddCommandHandler(impl, name)
+	{
+		// handlers
 	}
 
-	for _, impl := range req.Menus {
-		s.bot.AddMenu(impl)
+	{
+		s.bot.AddMenu(mainmenu.NewMainMenu())
 	}
 
 	return s
