@@ -2,17 +2,17 @@ package mainmenu
 
 import (
 	"github.com/AlexSkilled/go_tg/interfaces"
-	"github.com/AlexSkilled/go_tg/model/menu"
+	"github.com/AlexSkilled/go_tg/model/response/menu"
 
-	"gitM8/internal/transport/tg/handlers/register"
+	create_ticket "gitM8/internal/transport/tg/handlers/create-ticket"
 )
 
-const Command = "/menu"
+const Command = "/start"
 
 func NewMainMenu() interfaces.Menu {
 	m := menu.NewSimple("Main menu", Command)
 
-	m.AddButton("Register", register.Command)
+	m.AddButton("Get url for webhook", create_ticket.Command)
 
 	return m
 }

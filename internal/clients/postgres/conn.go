@@ -2,15 +2,17 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 
+	"gitM8/internal/config"
 	"gitM8/internal/utils/closer"
 )
 
-func New(ctx context.Context, connectionString string) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(ctx, connectionString)
+func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
+	conn, err := pgx.Connect(ctx, createConnectionString(cfg))
 	if err != nil {
 		return nil, errors.Wrap(err, "error checking connection to redis")
 	}
@@ -20,4 +22,15 @@ func New(ctx context.Context, connectionString string) (*pgx.Conn, error) {
 	})
 
 	return conn, nil
+}
+
+func createConnectionString(cfg *config.Config) string {
+	//"user=jack password=secret host=pg.example.com port=5432 dbname=mydb sslmode=verify-ca"
+	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
+		cfg.GetString(config.DataSourcesPostgresUser),
+		cfg.GetString(config.DataSourcesPostgresPwd),
+		cfg.GetString(config.DataSourcesPostgresHost),
+		cfg.GetString(config.DataSourcesPostgresPort),
+		cfg.GetString(config.DataSourcesPostgresName),
+	)
 }
