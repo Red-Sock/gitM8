@@ -20,7 +20,7 @@ func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
 	}
 
 	return &Service{
-		regSrv: v1.NewRegistrationService(pgRepo),
+		regSrv: v1.NewRegistrationService(pgRepo, cfg),
 	}, nil
 }
 
