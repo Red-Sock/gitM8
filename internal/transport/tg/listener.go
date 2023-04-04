@@ -1,39 +1,42 @@
 package tg
 
 import (
+	"context"
+
 	"github.com/AlexSkilled/go_tg/client"
-	tginterfaces "github.com/AlexSkilled/go_tg/interfaces"
+
+	"gitM8/internal/config"
+	"gitM8/internal/service/interfaces"
+	create_ticket "gitM8/internal/transport/tg/handlers/create-ticket"
+	"gitM8/internal/transport/tg/menus/mainmenu"
 )
 
 type Server struct {
 	bot *client.Bot
 }
 
-type CreateRequest struct {
-	Handlers    map[string]tginterfaces.CommandHandler
-	Credentials string
-	Menus       []tginterfaces.Menu
-}
-
-func New(req CreateRequest) (s *Server) {
+func New(cfg *config.Config, srvs interfaces.Services) (s *Server) {
 	s = &Server{}
-	s.bot = client.NewBot(req.Credentials)
+	s.bot = client.NewBot(cfg.GetString(config.ServerTgApiKey))
 
-	for name, impl := range req.Handlers {
-		s.bot.AddCommandHandler(impl, name)
+	{
+		//s.bot.AddCommandHandler(register_token.New(srvs.RegistrationService()), register_token.Command)
+		s.bot.AddCommandHandler(create_ticket.New(srvs.RegistrationService()), create_ticket.Command)
 	}
 
-	for _, impl := range req.Menus {
-		s.bot.AddMenu(impl)
+	{
+		s.bot.AddMenu(mainmenu.NewMainMenu())
 	}
 
 	return s
 }
 
-func (s *Server) Start() {
+func (s *Server) Start(_ context.Context) error {
 	s.bot.Start()
+	return nil
 }
 
-func (s *Server) Stop() {
+func (s *Server) Stop(_ context.Context) error {
 	s.bot.Stop()
+	return nil
 }

@@ -8,10 +8,13 @@ import (
 	"syscall"
 
 	"gitM8/internal/config"
+	"gitM8/internal/service"
 	//_transport_imports
 )
 
 func main() {
+	//usr, err := github.New("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1").GetCurrentUser(context.Background())
+	//println(usr.Id)
 	log.Println("starting app")
 
 	ctx := context.Background()
@@ -26,7 +29,13 @@ func main() {
 		log.Fatalf("error extracting startup duration %s", err)
 	}
 	context.WithTimeout(ctx, startupDuration)
-	stopFunc := apiEntryPoint(ctx, cfg)
+
+	srv, err := service.NewService(ctx, cfg)
+	if err != nil {
+		log.Fatalf("error assembling service layer %s", err)
+	}
+
+	stopFunc := apiEntryPoint(ctx, cfg, srv)
 
 	waitingForTheEnd()
 

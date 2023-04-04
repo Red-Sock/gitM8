@@ -3,8 +3,10 @@ package rest_api
 import (
 	"context"
 	"encoding/json"
-	"gitM8/internal/config"
+	"log"
 	"net/http"
+
+	"gitM8/internal/config"
 
 	"github.com/gorilla/mux"
 )
@@ -31,8 +33,15 @@ func NewServer(cfg *config.Config) *Server {
 	return s
 }
 
-func (s *Server) Start(ctx context.Context) error {
-	return s.HttpServer.ListenAndServe()
+func (s *Server) Start(_ context.Context) error {
+	go func() {
+		err := s.HttpServer.ListenAndServe()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	return nil
 }
 
 func (s *Server) Stop(ctx context.Context) error {
