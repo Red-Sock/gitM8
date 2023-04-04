@@ -8,5 +8,5 @@ type Ticket struct {
 }
 
 type CreateTicketRequest struct {
-	OwnerId uint64
+	OwnerTgId uint64
 }

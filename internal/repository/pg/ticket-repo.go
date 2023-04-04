@@ -23,11 +23,11 @@ func (t *TicketRepo) Add(ctx context.Context, req domain.Ticket) (domain.Ticket,
 		`
 INSERT INTO tickets
     (name, owner_id, web_url) VALUES 
-	(  $1,       $2,      $3)`,
+	(  $1,       $2,      $3) RETURNING id`,
 		req.Name,
-		req.WebURL,
 		req.OwnerId,
-	).Scan(req.Id)
+		req.WebURL,
+	).Scan(&req.Id)
 	if err != nil {
 		return req, err
 	}

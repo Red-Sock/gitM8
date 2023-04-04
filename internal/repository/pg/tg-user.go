@@ -29,12 +29,12 @@ ON CONFLICT (tg_id)
 RETURNING id
 `,
 		user.TgId,
-	).Scan(user.Id)
+	).Scan(&user.Id)
 	if err != nil {
 		return domain.TgUser{}, err
 	}
 
-	return domain.TgUser{}, nil
+	return user, nil
 }
 
 func (r *TgUsersRepo) Get(ctx context.Context, tgId int64) (user domain.TgUser, err error) {

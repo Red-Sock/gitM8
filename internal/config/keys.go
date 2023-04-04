@@ -13,4 +13,5 @@ const (
 	DataSourcesPostgresUser = "data_sources_postgres_user"
 	ServerRestAPIPort       = "server_rest_api_port"
 	ServerTgApiKey          = "server_tg_api_key"
+	WebhookHostURL          = "webhook_host_url"
 )

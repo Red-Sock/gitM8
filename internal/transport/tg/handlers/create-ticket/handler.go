@@ -26,7 +26,7 @@ func New(regService serviceInterfaces.RegistrationService) *Handler {
 
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	resp, err := h.regService.CreateBasicTicket(context.Background(), domain.CreateTicketRequest{
-		OwnerId: uint64(in.Contact.UserID),
+		OwnerTgId: uint64(in.From.ID),
 	})
 	if err != nil {
 		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
