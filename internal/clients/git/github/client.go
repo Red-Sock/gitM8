@@ -40,15 +40,10 @@ func (g *GitClient) GetCurrentUser(ctx context.Context) (domain.TgUser, error) {
 	}
 
 	var out domain.TgUser
-	if usr.ID == nil {
-		return domain.TgUser{}, errors.Join(gitErrors.ErrInvalidResponseData, errors.New("no user id"))
-	}
-	out.GitId = uint64(*usr.ID)
 
 	if usr.Name == nil {
 		return domain.TgUser{}, errors.Join(gitErrors.ErrInvalidResponseData, errors.New("no username"))
 	}
-	out.GitUsername = *usr.Name
 
 	return out, nil
 }
