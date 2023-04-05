@@ -1,4 +1,4 @@
-package domain
+package webhook
 
 import (
 	"strings"

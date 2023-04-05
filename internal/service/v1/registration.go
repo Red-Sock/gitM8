@@ -31,7 +31,6 @@ func NewRegistrationService(repository dataInterfaces.Repository, cfg *config.Co
 }
 
 func (r *RegistrationService) CreateBasicTicket(ctx context.Context, req domain.CreateTicketRequest) (ticket domain.Ticket, err error) {
-
 	user, err := r.user.Upsert(ctx, domain.TgUser{
 		TgId: req.OwnerTgId,
 	})
