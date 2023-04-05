@@ -1,4 +1,4 @@
-package main
+package bootstrap
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"gitM8/internal/transport/rest_api"
 )
 
-func apiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.Services) func(context.Context) error {
+func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.Services) func(context.Context) error {
 	mngr := transport.NewManager()
 
 	mngr.AddServer(rest_api.NewServer(cfg, services))
