@@ -1,12 +1,11 @@
 package rest_api
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"net/http"
 
-	"google.golang.org/appengine/log"
+	"github.com/sirupsen/logrus"
 
 	"gitM8/internal/service/domain/webhook"
 )
@@ -16,14 +15,12 @@ const (
 )
 
 func (s *Server) Webhook(_ http.ResponseWriter, req *http.Request) {
-	ctx := context.Background()
-
 	var wh webhook.Request
 	var err error
 
 	wh.Payload, err = io.ReadAll(req.Body)
 	if err != nil {
-		log.Errorf(ctx, "error reading webhook body: %s", err)
+		logrus.Errorf("error reading webhook body: %s", err)
 		return
 	}
 
@@ -32,15 +29,15 @@ func (s *Server) Webhook(_ http.ResponseWriter, req *http.Request) {
 		wh.Src = webhook.RepoTypeGithub
 		wh.Type.ParseGithub(req.Header.Get(githubHeader))
 	default:
-		log.Errorf(ctx, "error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
+		logrus.Errorf("error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
 		return
 	}
-	log.Infof(ctx, "Payload: %s, Src: %s, Type: %s", string(wh.Payload), wh.Src, wh.Type)
+	logrus.Infof("Payload: %s, Src: %d, Type: %d", string(wh.Payload), wh.Src, wh.Type)
 	return
 
 	err = s.services.WebhookService().HandleWebhook(wh)
 	if err != nil {
-		log.Errorf(ctx, "error handling webhook %s", err.Error())
+		logrus.Errorf("error handling webhook %s", err.Error())
 		return
 	}
 }

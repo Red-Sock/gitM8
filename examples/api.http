@@ -3,4 +3,4 @@ POST http://{{rest_api}}/webhooks
 Content-Type: application/json
 X-GitHub-Event: push
 
-{}
+{"12": 12}
