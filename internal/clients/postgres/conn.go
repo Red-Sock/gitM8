@@ -4,24 +4,21 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/pkg/errors"
-
 	"gitM8/internal/config"
-	"gitM8/internal/utils/closer"
 )
 
-func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(ctx, createConnectionString(cfg))
-	if err != nil {
-		return nil, errors.Wrap(err, "error checking connection to redis")
-	}
+func New(ctx context.Context, cfg *config.Config) (interface{}, error) { //(*pgx.Conn, error) {
+	//conn, err := pgx.Connect(ctx, createConnectionString(cfg))
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "error checking connection to redis")
+	//}
+	//
+	//closer.Add(func() error {
+	//	return conn.Close(ctx)
+	//})
 
-	closer.Add(func() error {
-		return conn.Close(ctx)
-	})
-
-	return conn, nil
+	//return conn, nil
+	return nil, nil
 }
 
 func createConnectionString(cfg *config.Config) string {
