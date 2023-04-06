@@ -10,6 +10,7 @@ import (
 	"gitM8/cmd/gitM8/bootstrap"
 	"gitM8/internal/config"
 	"gitM8/internal/service/v1"
+	//_transport_imports
 )
 
 func main() {
