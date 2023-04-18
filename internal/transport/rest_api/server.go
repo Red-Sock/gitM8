@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"gitM8/internal/config"
+	"gitM8/internal/service/interfaces"
 
 	"github.com/gorilla/mux"
 )
@@ -14,10 +15,12 @@ import (
 type Server struct {
 	HttpServer *http.Server
 
+	services interfaces.Services
+
 	version string
 }
 
-func NewServer(cfg *config.Config) *Server {
+func NewServer(cfg *config.Config, services interfaces.Services) *Server {
 	r := mux.NewRouter()
 	s := &Server{
 		HttpServer: &http.Server{
@@ -25,11 +28,13 @@ func NewServer(cfg *config.Config) *Server {
 			Handler: r,
 		},
 
+		services: services,
+
 		version: cfg.GetString(config.AppInfoVersion),
 	}
 
 	r.HandleFunc("/version", s.Version)
-
+	r.HandleFunc("/webhooks", s.Webhook)
 	return s
 }
 

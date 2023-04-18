@@ -1,4 +1,4 @@
-package service
+package v1
 
 import (
 	"context"
@@ -6,11 +6,11 @@ import (
 	"gitM8/internal/config"
 	"gitM8/internal/repository/pg"
 	"gitM8/internal/service/interfaces"
-	v1 "gitM8/internal/service/v1"
 )
 
 type Service struct {
-	regSrv interfaces.RegistrationService
+	regSrv     interfaces.RegistrationService
+	webhookSrv interfaces.WebhookService
 }
 
 func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
@@ -20,10 +20,15 @@ func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
 	}
 
 	return &Service{
-		regSrv: v1.NewRegistrationService(pgRepo, cfg),
+		regSrv:     NewRegistrationService(pgRepo, cfg),
+		webhookSrv: NewWebhookService(),
 	}, nil
 }
 
 func (s *Service) RegistrationService() interfaces.RegistrationService {
 	return s.regSrv
+}
+
+func (s *Service) WebhookService() interfaces.WebhookService {
+	return s.webhookSrv
 }
