@@ -7,7 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"gitM8/cmd/gitM8/bootstrap"
 	"gitM8/internal/config"
+	"gitM8/internal/service/v1"
 	//_transport_imports
 )
 
@@ -26,7 +28,13 @@ func main() {
 		log.Fatalf("error extracting startup duration %s", err)
 	}
 	context.WithTimeout(ctx, startupDuration)
-	stopFunc := apiEntryPoint(ctx, cfg)
+
+	srv, err := v1.NewService(ctx, cfg)
+	if err != nil {
+		log.Fatalf("error assembling service layer %s", err)
+	}
+
+	stopFunc := bootstrap.ApiEntryPoint(ctx, cfg, srv)
 
 	waitingForTheEnd()
 
