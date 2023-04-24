@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"gitM8/internal/config"
-	"gitM8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
 
 	"github.com/gorilla/mux"
 )

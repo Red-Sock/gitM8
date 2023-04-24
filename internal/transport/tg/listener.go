@@ -3,12 +3,12 @@ package tg
 import (
 	"context"
 
-	"github.com/AlexSkilled/go_tg/client"
+	"github.com/Red-Sock/go_tg/client"
 
-	"gitM8/internal/config"
-	"gitM8/internal/service/interfaces"
-	create_ticket "gitM8/internal/transport/tg/handlers/create-ticket"
-	"gitM8/internal/transport/tg/menus/mainmenu"
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	create_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/create-ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/menus/mainmenu"
 )
 
 type Server struct {

@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"gitM8/internal/service/domain/webhook"
+	"github.com/Red-Sock/gitm8/internal/service/domain/webhook"
 )
 
 type WebhookService struct {
