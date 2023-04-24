@@ -10,6 +10,7 @@ import (
 	"github.com/Red-Sock/gitm8/cmd/gitM8/bootstrap"
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/v1"
+"gitM8/cmd/gitM8/bootstrap"
 )
 
 func main() {
@@ -34,7 +35,9 @@ func main() {
 	}
 
 	stopFunc := bootstrap.ApiEntryPoint(ctx, cfg, srv)
+stopFunc := bootstrap.ApiEntryPoint(ctx, cfg)
 
+	
 	waitingForTheEnd()
 
 	err = stopFunc(context.Background())
