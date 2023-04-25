@@ -17,7 +17,7 @@ type Server struct {
 
 func New(cfg *config.Config, srvs interfaces.Services) (s *Server) {
 	s = &Server{}
-	s.bot = client.NewBot(cfg.GetString(config.ServerTgApiKey))
+	s.bot = client.NewBot(cfg.GetString(config.ServerTgAPIKey))
 
 	{
 		//s.bot.AddCommandHandler(register_token.New(srvs.RegistrationService()), register_token.Command)

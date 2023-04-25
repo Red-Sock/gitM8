@@ -26,17 +26,11 @@ func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
 }
 
 func createConnectionString(cfg *config.Config) string {
-	sslMode := cfg.GetString(config.DataSourcesPostgresSSLMode)
-
-	if sslMode == "" {
-		sslMode = "disable"
-	}
-	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=%s",
-		cfg.GetString(config.DataSourcesPostgresUser),
-		cfg.GetString(config.DataSourcesPostgresPwd),
-		cfg.GetString(config.DataSourcesPostgresHost),
-		cfg.GetString(config.DataSourcesPostgresPort),
-		cfg.GetString(config.DataSourcesPostgresName),
-		sslMode,
+	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
+		cfg.GetString(config.DataSourcesPostgresDBUser),
+		cfg.GetString(config.DataSourcesPostgresDBPwd),
+		cfg.GetString(config.DataSourcesPostgresDBHost),
+		cfg.GetString(config.DataSourcesPostgresDBPort),
+		cfg.GetString(config.DataSourcesPostgresDBName),
 	)
 }

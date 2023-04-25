@@ -4,22 +4,32 @@ import (
 	"context"
 	"log"
 
-	"gitM8/internal/config"
-	"gitM8/internal/transport"
+	"github.com/pkg/errors"
 
-	"gitM8/internal/transport/rest_api"
-	"gitM8/internal/transport/tg")
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/transport"
+	"github.com/Red-Sock/gitm8/internal/transport/tg"
 
-func ApiEntryPoint(ctx context.Context, cfg *config.Config) func(context.Context) error {
+	"github.com/Red-Sock/gitm8/internal/transport/rest_api"
+)
+
+func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.Services) (func(context.Context) error, error) {
 	mngr := transport.NewManager()
 
-	mngr.AddServer(rest_api.NewServer(cfg))
-	mngr.AddServer(tg.NewServer(cfg))
+	srv, err := rest_api.NewServer(cfg, services)
+	if err != nil {
+		return nil, errors.Wrap(err, "error starting up a server")
+	}
+	mngr.AddServer(srv)
+	mngr.AddServer(tg.New(cfg, services))
+
 	go func() {
 		err := mngr.Start(ctx)
 		if err != nil {
 			log.Fatalf("error starting server %s", err.Error())
 		}
 	}()
-	return mngr.Stop
+
+	return mngr.Stop, nil
 }
