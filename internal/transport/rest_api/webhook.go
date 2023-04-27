@@ -33,7 +33,6 @@ func (s *Server) Webhook(_ http.ResponseWriter, req *http.Request) {
 		return
 	}
 	logrus.Infof("Payload: %s, Src: %d, Type: %d", string(wh.Payload), wh.Src, wh.Type)
-	return
 
 	err = s.services.WebhookService().HandleWebhook(wh)
 	if err != nil {

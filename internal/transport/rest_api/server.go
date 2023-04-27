@@ -54,7 +54,7 @@ func (s *Server) Start(_ context.Context) error {
 		}
 	}()
 
-	logrus.Infof("started http listener on: %s", s.HttpServer.Addr)
+	logrus.Infof("started webhook http listener on: %s", s.HttpServer.Addr)
 
 	return nil
 }
