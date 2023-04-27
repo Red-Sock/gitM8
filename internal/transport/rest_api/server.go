@@ -5,9 +5,13 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
-	"gitM8/internal/config"
-	"gitM8/internal/service/interfaces"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
 
 	"github.com/gorilla/mux"
 )
@@ -20,11 +24,15 @@ type Server struct {
 	version string
 }
 
-func NewServer(cfg *config.Config, services interfaces.Services) *Server {
+func NewServer(cfg *config.Config, services interfaces.Services) (*Server, error) {
+	port, err := cfg.TryGetInt(config.ServerRestAPIPort)
+	if err != nil {
+		return nil, errors.Wrap(err, "error extracting "+config.ServerRestAPIPort+" from config")
+	}
 	r := mux.NewRouter()
 	s := &Server{
 		HttpServer: &http.Server{
-			Addr:    "0.0.0.0:" + cfg.GetString(config.ServerRestAPIPort),
+			Addr:    "0.0.0.0:" + strconv.Itoa(port),
 			Handler: r,
 		},
 
@@ -35,7 +43,7 @@ func NewServer(cfg *config.Config, services interfaces.Services) *Server {
 
 	r.HandleFunc("/version", s.Version)
 	r.HandleFunc("/webhooks", s.Webhook)
-	return s
+	return s, nil
 }
 
 func (s *Server) Start(_ context.Context) error {
@@ -45,6 +53,8 @@ func (s *Server) Start(_ context.Context) error {
 			log.Fatal(err)
 		}
 	}()
+
+	logrus.Infof("started webhook http listener on: %s", s.HttpServer.Addr)
 
 	return nil
 }

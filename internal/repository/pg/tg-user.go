@@ -5,7 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"gitM8/internal/service/domain"
+	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
 type TgUsersRepo struct {

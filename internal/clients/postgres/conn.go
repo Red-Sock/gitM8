@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 
-	"gitM8/internal/config"
-	"gitM8/internal/utils/closer"
+	"github.com/jackc/pgx/v5"
+
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/utils/closer"
 )
 
 func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
@@ -25,12 +26,11 @@ func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
 }
 
 func createConnectionString(cfg *config.Config) string {
-	//"user=jack password=secret host=pg.example.com port=5432 dbname=mydb sslmode=verify-ca"
 	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
-		cfg.GetString(config.DataSourcesPostgresUser),
-		cfg.GetString(config.DataSourcesPostgresPwd),
-		cfg.GetString(config.DataSourcesPostgresHost),
-		cfg.GetString(config.DataSourcesPostgresPort),
-		cfg.GetString(config.DataSourcesPostgresName),
+		cfg.GetString(config.DataSourcesPostgresDBUser),
+		cfg.GetString(config.DataSourcesPostgresDBPwd),
+		cfg.GetString(config.DataSourcesPostgresDBHost),
+		cfg.GetString(config.DataSourcesPostgresDBPort),
+		cfg.GetString(config.DataSourcesPostgresDBName),
 	)
 }

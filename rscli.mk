@@ -1,6 +1,6 @@
-RSCLI_VERSION=V0.0.18-alpha
+RSCLI_VERSION=V0.0.20-alpha
 rscli-version:
-	 @echo $(RSCLI_VERSION)
+	@echo $(RSCLI_VERSION)
 #==============
 # migrations
 #==============
@@ -14,5 +14,10 @@ ifeq ("$(GOOSE_VERSION)", "")
 else
 	@echo "goose is installed!"
 endif
+
+mig-up:
+
+	@echo "applying migration on postgres_db"
+	GOOSE_DRIVER=postgres GOOSE_DBSTRING=postgresql://postgres:pwd@0.0.0.0:5432/postgres goose up
 
 #==============

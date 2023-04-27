@@ -3,12 +3,12 @@ package tg
 import (
 	"context"
 
-	"github.com/AlexSkilled/go_tg/client"
+	"github.com/Red-Sock/go_tg/client"
 
-	"gitM8/internal/config"
-	"gitM8/internal/service/interfaces"
-	create_ticket "gitM8/internal/transport/tg/handlers/create-ticket"
-	"gitM8/internal/transport/tg/menus/mainmenu"
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	create_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/create-ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/menus/mainmenu"
 )
 
 type Server struct {
@@ -17,7 +17,7 @@ type Server struct {
 
 func New(cfg *config.Config, srvs interfaces.Services) (s *Server) {
 	s = &Server{}
-	s.bot = client.NewBot(cfg.GetString(config.ServerTgApiKey))
+	s.bot = client.NewBot(cfg.GetString(config.ServerTgAPIKey))
 
 	{
 		//s.bot.AddCommandHandler(register_token.New(srvs.RegistrationService()), register_token.Command)

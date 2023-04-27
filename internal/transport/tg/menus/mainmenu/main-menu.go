@@ -1,10 +1,10 @@
 package mainmenu
 
 import (
-	"github.com/AlexSkilled/go_tg/interfaces"
-	"github.com/AlexSkilled/go_tg/model/response/menu"
+	"github.com/Red-Sock/go_tg/interfaces"
+	"github.com/Red-Sock/go_tg/model/response/menu"
 
-	create_ticket "gitM8/internal/transport/tg/handlers/create-ticket"
+	create_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/create-ticket"
 )
 
 const Command = "/start"

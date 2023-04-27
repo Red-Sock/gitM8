@@ -7,7 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"gitM8/internal/service/domain/webhook"
+	"github.com/Red-Sock/gitm8/internal/service/domain/webhook"
 )
 
 const (
@@ -33,7 +33,6 @@ func (s *Server) Webhook(_ http.ResponseWriter, req *http.Request) {
 		return
 	}
 	logrus.Infof("Payload: %s, Src: %d, Type: %d", string(wh.Payload), wh.Src, wh.Type)
-	return
 
 	err = s.services.WebhookService().HandleWebhook(wh)
 	if err != nil {
