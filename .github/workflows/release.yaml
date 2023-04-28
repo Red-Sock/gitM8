@@ -17,9 +17,8 @@ jobs:
 
       - name: Build and push image
         run: |
-          echo $REPO_NAME
-#          docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PWD }} ${{ secrets.REGISTRY_HOST }}
-#          docker build -t ${{ secrets.REGISTRY_HOST }}/ $REPO_NAME:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/ $REPO_NAME:latest .
-#          docker push ${{ secrets.REGISTRY_HOST }}/ $REPO_NAME:$GITHUB_SHA
-#          docker push ${{ secrets.REGISTRY_HOST }}/ $REPO_NAME:latest
+          docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PWD }} ${{ secrets.REGISTRY_HOST }}
+          docker build -t ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:latest .
+          docker push ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:$GITHUB_SHA
+          docker push ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:latest
  
