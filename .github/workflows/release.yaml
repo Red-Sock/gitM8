@@ -14,9 +14,10 @@ jobs:
 
       - name: Build and push image
         run: |
-          REPONAME=echo ${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'
+          echo "REPONAME=$(${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/')" >> $GITHUB_ENV
+          
           docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PWD }} ${{ secrets.REGISTRY_HOST }}
-          docker build -t ${{ secrets.REGISTRY_HOST }}/${{ REPONAME }}:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/${{ REPONAME }}:latest .
-          docker push ${{ secrets.REGISTRY_HOST }}/${{ REPONAME }}:$GITHUB_SHA
-          docker push ${{ secrets.REGISTRY_HOST }}/${{ REPONAME }}:latest
+          docker build -t ${{ secrets.REGISTRY_HOST }}/$REPONAME:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/$REPONAME:latest .
+          docker push ${{ secrets.REGISTRY_HOST }}/$REPONAME:$GITHUB_SHA
+          docker push ${{ secrets.REGISTRY_HOST }}/$REPONAME:latest
  
