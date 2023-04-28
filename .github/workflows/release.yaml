@@ -17,7 +17,7 @@ jobs:
 
       - name: Build and push image
         run: |
-          echo ${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/')
+          echo ${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'
 
 #          docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PWD }} ${{ secrets.REGISTRY_HOST }}
 #          docker build -t ${{ secrets.REGISTRY_HOST }}/${{ env.REPONAME }}:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/${{ env.REPONAME }}:latest .
