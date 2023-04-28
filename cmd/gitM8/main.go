@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,7 +12,6 @@ import (
 	"github.com/Red-Sock/gitm8/cmd/gitM8/bootstrap"
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/v1"
-"gitM8/cmd/gitM8/bootstrap"
 )
 
 func main() {
@@ -43,11 +43,9 @@ func main() {
 	stopFunc, err := bootstrap.ApiEntryPoint(ctx, cfg, srv)
 	if err != nil {
 		logrus.Fatalf("error starting api %s", err)
-	}stopFunc := bootstrap.ApiEntryPoint(ctx, cfg)
+	}
 
-	
 	waitingForTheEnd()
-
 
 	err = stopFunc(context.Background())
 	if err != nil {
