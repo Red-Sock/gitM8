@@ -12,10 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Obtain repo name
+        run: echo "REPO_NAME=$(echo ${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/')" >>$GITHUB_ENV
 
       - name: Build and push image
         run: |
-          echo "REPO_NAME=$(echo ${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/')" >>$GITHUB_ENV
           echo $REPO_NAME
 #          docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PWD }} ${{ secrets.REGISTRY_HOST }}
 #          docker build -t ${{ secrets.REGISTRY_HOST }}/ $REPO_NAME:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/ $REPO_NAME:latest .
