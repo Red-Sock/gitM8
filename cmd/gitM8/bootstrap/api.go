@@ -17,7 +17,6 @@ import (
 func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.Services) (func(context.Context) error, error) {
 	mngr := transport.NewManager()
 
-	srv, err := rest_api.NewServer(cfg, services)
 	if err != nil {
 		return nil, errors.Wrap(err, "error starting up a server")
 	}
