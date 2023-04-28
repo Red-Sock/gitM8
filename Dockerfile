@@ -9,6 +9,8 @@ FROM scratch
 
 LABEL com.centurylinklabs.watchtower.enable=true
 
+RUN apk update && apk add ca-certificates
+
 WORKDIR /app
 COPY --from=builder ./deploy/server/ .
 EXPOSE 8080
