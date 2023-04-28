@@ -3,9 +3,9 @@ package v1
 import (
 	"context"
 
-	"github.com/Red-Sock/gitm8/internal/config"
-	"github.com/Red-Sock/gitm8/internal/repository/pg"
-	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitM8/internal/config"
+	"github.com/Red-Sock/gitM8/internal/repository/pg"
+	"github.com/Red-Sock/gitM8/internal/service/interfaces"
 )
 
 type Service struct {

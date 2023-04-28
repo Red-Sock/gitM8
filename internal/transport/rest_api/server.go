@@ -9,8 +9,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Red-Sock/gitm8/internal/config"
-	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitM8/internal/config"
+	"github.com/Red-Sock/gitM8/internal/service/interfaces"
 
 	"github.com/gorilla/mux"
 )

@@ -6,11 +6,11 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/Red-Sock/gitm8/internal/config"
-	"github.com/Red-Sock/gitm8/internal/service/interfaces"
-	"github.com/Red-Sock/gitm8/internal/transport"
-	"github.com/Red-Sock/gitm8/internal/transport/rest_api"
-	"github.com/Red-Sock/gitm8/internal/transport/tg"
+	"github.com/Red-Sock/gitM8/internal/config"
+	"github.com/Red-Sock/gitM8/internal/service/interfaces"
+	"github.com/Red-Sock/gitM8/internal/transport"
+	"github.com/Red-Sock/gitM8/internal/transport/rest_api"
+	"github.com/Red-Sock/gitM8/internal/transport/tg"
 )
 
 func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.Services) (func(context.Context) error, error) {

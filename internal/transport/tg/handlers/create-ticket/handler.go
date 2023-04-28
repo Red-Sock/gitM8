@@ -8,8 +8,8 @@ import (
 	"github.com/Red-Sock/go_tg/model"
 	"github.com/Red-Sock/go_tg/model/response"
 
-	"github.com/Red-Sock/gitm8/internal/service/domain"
-	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitM8/internal/service/domain"
+	serviceInterfaces "github.com/Red-Sock/gitM8/internal/service/interfaces"
 )
 
 const Command = "/create-ticket"

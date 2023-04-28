@@ -9,9 +9,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/Red-Sock/gitm8/cmd/gitM8/bootstrap"
-	"github.com/Red-Sock/gitm8/internal/config"
-	"github.com/Red-Sock/gitm8/internal/service/v1"
+	"github.com/Red-Sock/gitM8/cmd/gitM8/bootstrap"
+	"github.com/Red-Sock/gitM8/internal/config"
+	"github.com/Red-Sock/gitM8/internal/service/v1"
 )
 
 func main() {
