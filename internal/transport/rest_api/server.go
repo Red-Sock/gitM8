@@ -3,7 +3,6 @@ package rest_api
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -22,6 +21,9 @@ type Server struct {
 	services interfaces.Services
 
 	version string
+
+	crtPath string
+	keyPath string
 }
 
 func NewServer(cfg *config.Config, services interfaces.Services) (*Server, error) {
@@ -35,10 +37,10 @@ func NewServer(cfg *config.Config, services interfaces.Services) (*Server, error
 			Addr:    "0.0.0.0:" + strconv.Itoa(port),
 			Handler: r,
 		},
-
 		services: services,
-
-		version: cfg.GetString(config.AppInfoVersion),
+		version:  cfg.GetString(config.AppInfoVersion),
+		crtPath:  cfg.GetString(config.ServerRestAPICertPath),
+		keyPath:  cfg.GetString(config.ServerRestAPIKeyPath),
 	}
 
 	r.HandleFunc("/version", s.Version)
@@ -48,13 +50,18 @@ func NewServer(cfg *config.Config, services interfaces.Services) (*Server, error
 
 func (s *Server) Start(_ context.Context) error {
 	go func() {
-		err := s.HttpServer.ListenAndServe()
+		var err error
+		if s.crtPath != "" && s.keyPath != "" {
+			logrus.Infof("starting webhook https listener on: %s", s.HttpServer.Addr)
+			err = s.HttpServer.ListenAndServeTLS(s.crtPath, s.keyPath)
+		} else {
+			logrus.Infof("starting webhook http listener on: %s", s.HttpServer.Addr)
+			err = s.HttpServer.ListenAndServe()
+		}
 		if err != nil {
-			log.Fatal(err)
+			logrus.Fatal(err)
 		}
 	}()
-
-	logrus.Infof("started webhook http listener on: %s", s.HttpServer.Addr)
 
 	return nil
 }
