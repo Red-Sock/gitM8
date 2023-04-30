@@ -31,10 +31,11 @@ func NewServer(cfg *config.Config, services interfaces.Services) (*Server, error
 	if err != nil {
 		return nil, errors.Wrap(err, "error extracting "+config.ServerRestAPIPort+" from config")
 	}
+
 	r := mux.NewRouter()
 	s := &Server{
 		HttpServer: &http.Server{
-			Addr:    "0.0.0.0:" + strconv.Itoa(port),
+			Addr:    ":" + strconv.Itoa(port),
 			Handler: r,
 		},
 		services: services,
@@ -58,7 +59,7 @@ func (s *Server) Start(_ context.Context) error {
 			logrus.Infof("starting webhook http listener on: %s", s.HttpServer.Addr)
 			err = s.HttpServer.ListenAndServe()
 		}
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			logrus.Fatal(err)
 		}
 	}()

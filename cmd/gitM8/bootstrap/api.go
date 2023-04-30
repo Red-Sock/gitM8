@@ -2,9 +2,9 @@ package bootstrap
 
 import (
 	"context"
-	"log"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitM8/internal/config"
 	"github.com/Red-Sock/gitM8/internal/service/interfaces"
@@ -27,7 +27,7 @@ func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.
 	go func() {
 		err := mngr.Start(ctx)
 		if err != nil {
-			log.Fatalf("error starting server %s", err.Error())
+			logrus.Fatalf("error starting server %s", err.Error())
 		}
 	}()
 
