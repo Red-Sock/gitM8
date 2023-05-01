@@ -1,6 +1,6 @@
 app_info:
-    name: gitM8
-    startupDuration: 1m
+    name: github.com/Red-Sock/gitM8
+    startup_duration: 60s
     version: v0.0.1
 data_sources:
     postgres_db:
