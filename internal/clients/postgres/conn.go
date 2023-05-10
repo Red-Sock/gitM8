@@ -27,10 +27,10 @@ func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {
 
 func createConnectionString(cfg *config.Config) string {
 	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
-		cfg.GetString(config.DataSourcesPostgresDBUser),
-		cfg.GetString(config.DataSourcesPostgresDBPwd),
-		cfg.GetString(config.DataSourcesPostgresDBHost),
-		cfg.GetString(config.DataSourcesPostgresDBPort),
-		cfg.GetString(config.DataSourcesPostgresDBName),
+		cfg.GetString(config.DataSourcesPostgresUser),
+		cfg.GetString(config.DataSourcesPostgresPwd),
+		cfg.GetString(config.DataSourcesPostgresHost),
+		cfg.GetString(config.DataSourcesPostgresPort),
+		cfg.GetString(config.DataSourcesPostgresName),
 	)
 }
