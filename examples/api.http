@@ -1,5 +1,5 @@
 ### simple ping
-POST http://registry.redsock.ru/webhooks
+POST http://0.0.0.0:8080/webhooks
 Content-Type: application/json
 X-GitHub-Event: push
 
