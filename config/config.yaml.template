@@ -12,7 +12,9 @@ data_sources:
         user: postgres
 server:
     rest_api:
+        cert_path: ""
+        key_path: ""
         port: "8080"
     tg:
-        api_key: some:key
+        api_key: 1816053505:AAG9VfAEJtRFZlqp58WgESyAByjlBhmR0Ik
 webhook_host_url: temporarry-anavailable
