@@ -2,7 +2,8 @@ package bootstrap
 
 import (
 	"context"
-	"log"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"

@@ -8,8 +8,8 @@ import (
 	cli "github.com/google/go-github/v50/github"
 	"golang.org/x/oauth2"
 
-	gitErrors "github.com/Red-Sock/gitM8/internal/clients/git/errors"
-	"github.com/Red-Sock/gitM8/internal/service/domain"
+	gitErrors "github.com/Red-Sock/gitm8/internal/clients/git/errors"
+	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
 func New(token string) *GitClient {

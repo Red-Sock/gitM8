@@ -5,9 +5,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/Red-Sock/gitM8/internal/clients/postgres"
-	"github.com/Red-Sock/gitM8/internal/config"
-	"github.com/Red-Sock/gitM8/internal/repository/interfaces"
+	"github.com/Red-Sock/gitm8/internal/clients/postgres"
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/repository/interfaces"
 )
 
 type Repository struct {
