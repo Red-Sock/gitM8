@@ -21,7 +21,7 @@ func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.
 	go func() {
 		err := mngr.Start(ctx)
 		if err != nil {
-			log.Fatalf("error starting server %s", err.Error())
+			logrus.Fatalf("error starting server %s", err.Error())
 		}
 	}()
 

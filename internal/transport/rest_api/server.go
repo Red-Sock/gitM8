@@ -4,11 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+
+	"github.com/gorilla/mux"
 )
 
 type Server struct {
@@ -22,11 +26,11 @@ type Server struct {
 	keyPath string
 }
 
-func NewServer(cfg *config.Config, services interfaces.Services) *Server {
-	r := http.NewServeMux()
+func NewServer(cfg *config.Config, services interfaces.Services) (*Server) {
+	r := mux.NewRouter()
 	s := &Server{
 		HttpServer: &http.Server{
-			Addr:    "0.0.0.0:" + cfg.GetString(config.ServerRestAPIPort),
+			Addr:    ":" + cfg.GetString(config.ServerRestAPIPort),
 			Handler: r,
 		},
 		services: services,
@@ -50,7 +54,7 @@ func (s *Server) Start(_ context.Context) error {
 			logrus.Infof("starting webhook http listener on: %s", s.HttpServer.Addr)
 			err = s.HttpServer.ListenAndServe()
 		}
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			logrus.Fatal(err)
 		}
 	}()

@@ -8,8 +8,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"github.com/Red-Sock/gitm8/internal/config"
-	"github.com/Red-Sock/gitm8/internal/utils/closer"
+	"github.com/Red-Sock/gitM8/internal/config"
+	"github.com/Red-Sock/gitM8/internal/utils/closer"
 )
 
 func New(ctx context.Context, cfg *config.Config) (*pgx.Conn, error) {

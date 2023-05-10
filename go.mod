@@ -1,4 +1,4 @@
-module github.com/Red-Sock/gitm8
+module github.com/Red-Sock/gitM8
 
 go 1.20
 

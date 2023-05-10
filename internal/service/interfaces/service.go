@@ -3,8 +3,8 @@ package interfaces
 import (
 	"context"
 
-	"github.com/Red-Sock/gitm8/internal/service/domain"
-	"github.com/Red-Sock/gitm8/internal/service/domain/webhook"
+	"github.com/Red-Sock/gitM8/internal/service/domain"
+	"github.com/Red-Sock/gitM8/internal/service/domain/webhook"
 )
 
 type Services interface {
