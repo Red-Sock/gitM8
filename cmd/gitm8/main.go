@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -43,8 +44,13 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("error starting api %s", err)
 	}
+
 	waitingForTheEnd()
 
+	err = stopFunc(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 	err = stopFunc(context.Background())
 	if err != nil {
 		logrus.Fatal(err)

@@ -12,18 +12,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Go env
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.20'
-
-      - name: Install dependencies
-        run: go get .
+      - name: Obtain repo name
+        run: echo "REPO_NAME=$(echo ${{ github.event.repository.name }} | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/')" >>$GITHUB_ENV
 
       - name: Build and push image
         run: |
           docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PWD }} ${{ secrets.REGISTRY_HOST }}
-          docker build -t ${{ secrets.REGISTRY_HOST }}/${{ github.event.repository.name }}:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/${{ github.event.repository.name }}:latest .
-          docker push ${{ secrets.REGISTRY_HOST }}/${{ github.event.repository.name }}:$GITHUB_SHA
-          docker push ${{ secrets.REGISTRY_HOST }}/${{ github.event.repository.name }}:latest
+          docker build -t ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:$GITHUB_SHA -t ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:latest .
+          docker push ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:$GITHUB_SHA
+          docker push ${{ secrets.REGISTRY_HOST }}/$REPO_NAME:latest
  
