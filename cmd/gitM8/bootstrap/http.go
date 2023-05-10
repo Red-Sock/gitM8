@@ -4,12 +4,12 @@ import (
 	"context"
 	"log"
 
-	"gitM8/internal/config"
-	"gitM8/internal/service/interfaces"
-	"gitM8/internal/transport"
-	"gitM8/internal/transport/tg"
+	"github.com/Red-Sock/gitm8/internal/config"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/transport"
+	"github.com/Red-Sock/gitm8/internal/transport/tg"
 
-	"gitM8/internal/transport/rest_api"
+	"github.com/Red-Sock/gitm8/internal/transport/rest_api"
 )
 
 func ApiEntryPoint(ctx context.Context, cfg *config.Config, services interfaces.Services) func(context.Context) error {

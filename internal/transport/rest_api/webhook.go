@@ -7,7 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"gitM8/internal/service/domain/webhook"
+	"github.com/Red-Sock/gitm8/internal/service/domain/webhook"
 )
 
 const (

@@ -8,9 +8,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"gitM8/internal/config"
-	dataInterfaces "gitM8/internal/repository/interfaces"
-	"gitM8/internal/service/domain"
+	"github.com/Red-Sock/gitm8/internal/config"
+	dataInterfaces "github.com/Red-Sock/gitm8/internal/repository/interfaces"
+	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
 type RegistrationService struct {
