@@ -9,8 +9,6 @@ import (
 
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
-
-	"github.com/gorilla/mux"
 )
 
 type Server struct {
@@ -25,7 +23,7 @@ type Server struct {
 }
 
 func NewServer(cfg *config.Config, services interfaces.Services) *Server {
-	r := mux.NewRouter()
+	r := http.NewServeMux()
 	s := &Server{
 		HttpServer: &http.Server{
 			Addr:    "0.0.0.0:" + cfg.GetString(config.ServerRestAPIPort),
@@ -38,7 +36,7 @@ func NewServer(cfg *config.Config, services interfaces.Services) *Server {
 	}
 
 	r.HandleFunc("/version", s.Version)
-	r.HandleFunc("/webhooks", s.Webhook)
+	r.HandleFunc("/webhooks/", s.Webhook)
 	return s
 }
 
@@ -61,7 +59,12 @@ func (s *Server) Start(_ context.Context) error {
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	return s.HttpServer.Shutdown(ctx)
+	err := s.HttpServer.Shutdown(ctx)
+	if err == http.ErrServerClosed {
+		return nil
+	}
+
+	return err
 }
 
 func (s *Server) formResponse(r interface{}) ([]byte, error) {
