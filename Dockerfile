@@ -3,7 +3,7 @@ FROM golang as builder
 WORKDIR /app
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /deploy/server/gitm8 ./cmd/gitM8/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /deploy/server/gitm8 ./cmd/gitm8/main.go
 
 FROM alpine
 
