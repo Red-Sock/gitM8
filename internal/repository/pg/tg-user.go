@@ -19,17 +19,15 @@ func NewTgUserRepo(conn *pgx.Conn) *TgUsersRepo {
 }
 
 func (r *TgUsersRepo) Upsert(ctx context.Context, user domain.TgUser) (domain.TgUser, error) {
-	err := r.conn.QueryRow(ctx, `
+	_, err := r.conn.Exec(ctx, `
 INSERT INTO tg_users
 	(tg_id) VALUES
 	(   $1)
 
-ON CONFLICT (tg_id)
-    DO UPDATE SET tg_id = excluded.tg_id
-RETURNING id
+ON CONFLICT DO NOTHING
 `,
 		user.TgId,
-	).Scan(&user.Id)
+	)
 	if err != nil {
 		return domain.TgUser{}, err
 	}
@@ -40,13 +38,12 @@ RETURNING id
 func (r *TgUsersRepo) Get(ctx context.Context, tgId int64) (user domain.TgUser, err error) {
 	err = r.conn.QueryRow(ctx, `
 SELECT 
-	u.id,
 	u.tg_id
 from tg_users as u
 WHERE tg_id = $1
 `,
 		tgId,
-	).Scan(&user.Id, &user.TgId)
+	).Scan(&user.TgId)
 	if err != nil {
 		return domain.TgUser{}, err
 	}

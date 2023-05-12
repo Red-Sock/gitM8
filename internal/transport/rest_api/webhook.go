@@ -10,7 +10,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/Red-Sock/gitm8/internal/service/domain/webhook"
+	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
 const (
@@ -18,10 +18,10 @@ const (
 )
 
 func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
-	var ticket webhook.Ticket
+	var ticket domain.TicketRequest
 	var err error
 
-	ticket.OwnerId, ticket.Timestamp, err = extractWebhookPath(req.URL.Path)
+	ticket.OwnerId, ticket.Uri, err = extractWebhookPath(req.URL.Path)
 	if err != nil {
 		logrus.Error(err)
 		rw.WriteHeader(http.StatusBadRequest)
@@ -36,7 +36,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 
 	switch {
 	case req.Header.Get(githubHeader) != "":
-		ticket.Req.Src = webhook.RepoTypeGithub
+		ticket.Req.Src = domain.RepoTypeGithub
 		ticket.Req.Type.ParseGithub(req.Header.Get(githubHeader))
 	default:
 		logrus.Errorf("error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
@@ -45,7 +45,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 	}
 	logrus.Infof("Payload: %s, Src: %d, Type: %d", string(ticket.Req.Payload), ticket.Req.Src, ticket.Req.Type)
 
-	err = s.services.WebhookService().HandleWebhook(ticket.Req)
+	err = s.services.WebhookService().HandleWebhook(ticket)
 	if err != nil {
 		logrus.Errorf("error handling webhook %s", err.Error())
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -53,7 +53,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func extractWebhookPath(pth string) (ownerId int, ticketUUID string, err error) {
+func extractWebhookPath(pth string) (ownerId uint64, ticketUUID string, err error) {
 	pathArgs := strings.Split(pth, "/")
 	if len(pathArgs) < 4 {
 		return 0, "", errors.New("error parsing arguments from path on webhook request")
@@ -61,7 +61,7 @@ func extractWebhookPath(pth string) (ownerId int, ticketUUID string, err error) 
 
 	pathArgs = pathArgs[2:]
 
-	ownerId, err = strconv.Atoi(pathArgs[0])
+	ownerId, err = strconv.ParseUint(pathArgs[0], 10, 10)
 	if err != nil {
 		return 0, "", errors.Join(errors.New("error parsing ownerId from webhookRequest: %s"), err)
 	}

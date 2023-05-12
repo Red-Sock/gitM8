@@ -8,6 +8,10 @@ import (
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
 	create_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/create-ticket"
+	my_tickets "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets"
+	open_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket"
+	delete_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket/delete-ticket"
+	rename_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket/rename-ticket"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/menus/mainmenu"
 )
 
@@ -20,8 +24,12 @@ func New(cfg *config.Config, srvs interfaces.Services) (s *Server) {
 	s.bot = client.NewBot(cfg.GetString(config.ServerTgAPIKey))
 
 	{
-		//s.bot.AddCommandHandler(register_token.New(srvs.RegistrationService()), register_token.Command)
-		s.bot.AddCommandHandler(create_ticket.New(srvs.RegistrationService()), create_ticket.Command)
+		s.bot.AddCommandHandler(create_ticket.New(srvs.TicketsService()), create_ticket.Command)
+
+		s.bot.AddCommandHandler(my_tickets.New(srvs.TicketsService()), my_tickets.Command)
+		s.bot.AddCommandHandler(open_ticket.New(srvs.TicketsService()), open_ticket.Command)
+		s.bot.AddCommandHandler(rename_ticket.New(srvs.TicketsService()), rename_ticket.Command)
+		s.bot.AddCommandHandler(delete_ticket.New(srvs.TicketsService()), delete_ticket.Command)
 	}
 
 	{
