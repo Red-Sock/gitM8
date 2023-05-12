@@ -1,0 +1,20 @@
+app:
+    info:
+        name: gitM8
+        startupDuration: 1m
+        version: v0.0.1
+data_sources:
+    postgres:
+        host: 0.0.0.0
+        name: postgres
+        port: 5432
+        pwd: password
+        user: postgres
+server:
+    rest_api:
+        cert_path: ""
+        key_path: ""
+        port: 8080
+    tg:
+        api_key: 1816053505:AAG9VfAEJtRFZlqp58WgESyAByjlBhmR0Ik
+webhook_host_url: temporarry-anavailable

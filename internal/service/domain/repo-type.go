@@ -1,4 +1,4 @@
-package webhook
+package domain
 
 import (
 	"strings"
@@ -11,14 +11,22 @@ var ErrUnknownRepoType = errors.New("unknown repo type")
 type RepoType int
 
 const (
-	RepoTypeInvalid RepoType = iota
+	RepoTypeUnknown RepoType = iota
 	RepoTypeGithub
 )
 
-const Github = "github"
+const (
+	Github  = "github"
+	Unknown = "unknown"
+)
 
 func (r *RepoType) String() string {
-	return ""
+	switch *r {
+	case RepoTypeGithub:
+		return Github
+	default:
+		return Unknown
+	}
 }
 
 func (r *RepoType) SetType(in string) error {
