@@ -9,7 +9,8 @@ import (
 )
 
 type Service struct {
-	regSrv     interfaces.RegistrationService
+	regSrv     interfaces.TicketsService
+	ruleSrv    interfaces.RuleService
 	webhookSrv interfaces.WebhookService
 }
 
@@ -25,7 +26,7 @@ func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
 	}, nil
 }
 
-func (s *Service) RegistrationService() interfaces.RegistrationService {
+func (s *Service) TicketsService() interfaces.TicketsService {
 	return s.regSrv
 }
 

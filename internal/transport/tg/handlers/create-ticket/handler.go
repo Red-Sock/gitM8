@@ -7,6 +7,7 @@ import (
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
 	"github.com/Red-Sock/go_tg/model/response"
+	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
@@ -15,10 +16,10 @@ import (
 const Command = "/create-ticket"
 
 type Handler struct {
-	regService serviceInterfaces.RegistrationService
+	regService serviceInterfaces.TicketsService
 }
 
-func New(regService serviceInterfaces.RegistrationService) *Handler {
+func New(regService serviceInterfaces.TicketsService) *Handler {
 	return &Handler{
 		regService: regService,
 	}
@@ -29,13 +30,19 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		OwnerTgId: uint64(in.From.ID),
 	})
 	if err != nil {
+		logrus.Errorf("error creating basic ticket: %s", err)
 		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
 		return
 	}
 
-	out.SendMessage(response.NewMessage(
-		fmt.Sprintf("Insert this url as webhook for project: %s\nTicket id is: %d",
-			resp.WebURL,
-			resp.Id,
-		)))
+	webUrl, err := resp.GetWebUrl()
+	if err != nil {
+		logrus.Errorf("error getting weburl of ticket: %s", err)
+		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
+		return
+	}
+
+	out.SendMessage(response.NewMessage(fmt.Sprintf("Insert this url as webhook for project: %s\nTicket id is: %d",
+		webUrl,
+		resp.Id)))
 }
