@@ -3,7 +3,7 @@ module github.com/Red-Sock/gitm8
 go 1.20
 
 require (
-	github.com/Red-Sock/go_tg v0.0.9
+	github.com/Red-Sock/go_tg v0.0.11
 	github.com/google/go-github/v50 v50.2.1-0.20230401171619-b1c53f808b22
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/pkg/errors v0.9.1
@@ -29,8 +29,4 @@ require (
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
-)
-
-replace (
-	github.com/Red-Sock/go_tg v0.0.9 => /Users/alexbukov/Yandex.Disk.localized/redsock/go_tg
 )
