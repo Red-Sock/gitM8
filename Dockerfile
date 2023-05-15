@@ -13,7 +13,7 @@ RUN apk update && apk add ca-certificates
 
 WORKDIR /app
 COPY --from=builder /deploy/server/ .
-COPY --from=builder /app/migrations/ ./migrations/
+COPY --from=builder /app/migrations/ /app/migrations/
 EXPOSE 8080
 
 ENTRYPOINT ["./gitm8"]
