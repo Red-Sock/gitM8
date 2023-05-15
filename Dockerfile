@@ -12,8 +12,8 @@ LABEL com.centurylinklabs.watchtower.enable=true
 RUN apk update && apk add ca-certificates
 
 WORKDIR /app
-COPY --from=builder ./deploy/server/ .
-COPY --from=builder ./migrations migrations
+COPY --from=builder /deploy/server/ .
+COPY --from=builder /app/migrations/ ./migrations/
 EXPOSE 8080
 
 ENTRYPOINT ["./gitm8"]
