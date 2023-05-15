@@ -11,10 +11,10 @@ import (
 	"github.com/sirupsen/logrus"
 
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
-	open_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket"
 )
 
-const Command = "/my-tickets"
+const Command = "/my_tickets"
 
 type Handler struct {
 	tickets serviceInterfaces.TicketsService
@@ -28,10 +28,18 @@ func New(regService serviceInterfaces.TicketsService) *Handler {
 
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	ctx := context.Background()
+
 	tickets, err := h.tickets.GetByUser(ctx, uint64(in.From.ID))
 	if err != nil {
 		logrus.Errorf("error getting tickets: %s", err)
 		out.SendMessage(&response.MessageOut{Text: "internal server error: " + err.Error()})
+		return
+	}
+
+	if len(tickets) == 0 {
+		out.SendMessage(&response.MessageOut{
+			Text: "No ticket registered",
+		})
 		return
 	}
 
@@ -59,4 +67,8 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		Keys:      buttons,
 		MessageId: int64(in.MessageID),
 	})
+}
+
+func (h *Handler) GetDescription() string {
+	return "Returns all tickets available to you"
 }

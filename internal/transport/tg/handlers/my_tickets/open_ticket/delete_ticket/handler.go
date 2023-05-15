@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	Command = "/delete-ticket"
+	Command = "/delete_ticket"
 )
 
 type Handler struct {
@@ -46,4 +46,8 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	}
 
 	out.SendMessage(response.NewOpenMenu(shared_commands.MainMenu, in))
+}
+
+func (h *Handler) GetDescription() string {
+	return "Deletes ticket with {{ id }}"
 }

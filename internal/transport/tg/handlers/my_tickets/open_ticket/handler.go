@@ -11,12 +11,12 @@ import (
 	"github.com/Red-Sock/go_tg/model/response/menu"
 
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
-	delete_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket/delete-ticket"
-	rename_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket/rename-ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket/delete_ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket/rename_ticket"
 )
 
 const (
-	Command = "/open-ticket"
+	Command = "/open_ticket"
 
 	ticketInfoPattern = `
 Name: %s
@@ -84,4 +84,8 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		),
 		Keys: buttons,
 	})
+}
+
+func (h *Handler) GetDescription() string {
+	return "Returns information about ticket with {{ id }}"
 }

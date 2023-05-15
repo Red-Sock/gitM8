@@ -13,7 +13,7 @@ import (
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
 )
 
-const Command = "/create-ticket"
+const Command = "/create_ticket"
 
 type Handler struct {
 	regService serviceInterfaces.TicketsService
@@ -45,4 +45,8 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	out.SendMessage(response.NewMessage(fmt.Sprintf("Insert this url as webhook for project: %s\nTicket id is: %d",
 		webUrl,
 		resp.Id)))
+}
+
+func (h *Handler) GetDescription() string {
+	return "Create ticket"
 }

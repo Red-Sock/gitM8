@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	Command = "/rename-ticket"
+	Command = "/rename_ticket"
 )
 
 type Handler struct {
@@ -77,4 +77,8 @@ func (h *Handler) getNameFromUser(in *model.MessageIn, out tgapi.Chat) (string, 
 	out.SendMessage(&response.DeleteMessage{MessageId: int64(rsp.MessageID)})
 
 	return rsp.Text, nil
+}
+
+func (h *Handler) GetDescription() string {
+	return "Renames ticket with {{ id }} to a given name"
 }
