@@ -2,14 +2,14 @@ package domain
 
 type Request struct {
 	Src     RepoType
-	Type    Type
+	Type    EventType
 	Payload []byte
 }
 
-type Type int
+type EventType int
 
 const (
-	Invalid Type = iota
+	Invalid EventType = iota
 
 	Comment
 	Ping
@@ -24,23 +24,52 @@ const (
 	CommitStatus
 	WorkflowJob
 	WorkflowRun
-	WorkflowStart
+	WorkflowManualStart
 )
 
-func (w *Type) ParseGithub(in string) {
+func (w *EventType) ParseGithub(in string) {
 	*w, _ = githubEventsToDomain[in]
 }
 
-var githubEventsToDomain = map[string]Type{
-	"push":                        Push,
-	"pull_request":                PullRequest,
+func (w *EventType) String() string {
+	switch *w {
+	case Comment:
+		return "Commentary"
+	case Ping:
+		return "Webhook ping"
+	case PullRequest:
+		return "Pull request"
+	case PullRequestComment:
+		return "Comment on pull request"
+	case PullRequestReview:
+		return "Review on pull request"
+	case Push:
+		return "Push to repository"
+	case Release:
+		return "New release"
+	case CommitStatus:
+		return "Commit status"
+	case WorkflowJob:
+		return "Workflow job info"
+	case WorkflowRun:
+		return "Workflow info"
+	case WorkflowManualStart:
+		return "Workflow manual start"
+	default:
+		return "invalid type"
+	}
+}
+
+var githubEventsToDomain = map[string]EventType{
 	"commit_comment":              Comment,
 	"ping":                        Ping,
+	"pull_request":                PullRequest,
 	"pull_request_review_comment": PullRequestComment,
 	"pull_request_review":         PullRequestReview,
+	"push":                        Push,
 	"release":                     Release,
 	"status":                      CommitStatus,
 	"workflow_job":                WorkflowJob,
 	"workflow_run":                WorkflowRun,
-	"workflow_dispatch":           WorkflowStart,
+	"workflow_dispatch":           WorkflowManualStart,
 }

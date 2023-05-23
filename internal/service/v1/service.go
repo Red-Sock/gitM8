@@ -23,6 +23,7 @@ func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
 	return &Service{
 		regSrv:     NewRegistrationService(pgRepo, cfg),
 		webhookSrv: NewWebhookService(),
+		ruleSrv:    NewRuleService(pgRepo),
 	}, nil
 }
 
@@ -32,4 +33,8 @@ func (s *Service) TicketsService() interfaces.TicketsService {
 
 func (s *Service) WebhookService() interfaces.WebhookService {
 	return s.webhookSrv
+}
+
+func (s *Service) RuleService() interfaces.RuleService {
+	return s.ruleSrv
 }

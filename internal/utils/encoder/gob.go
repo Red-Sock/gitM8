@@ -18,3 +18,14 @@ func MarshalToGob(req any) ([]byte, error) {
 
 	return payload, nil
 }
+
+func MarshalFromGob(b []byte, src any) error {
+	enc := gob.NewDecoder(bytes.NewBuffer(b))
+
+	err := enc.Decode(src)
+	if err != nil {
+		return errors.Wrap(err, "error marshalling ticket rule to bytes")
+	}
+
+	return nil
+}

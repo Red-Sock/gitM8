@@ -43,7 +43,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	logrus.Infof("Payload: %s, Src: %d, Type: %d", string(ticket.Req.Payload), ticket.Req.Src, ticket.Req.Type)
+	logrus.Infof("Payload: %s, Src: %d, EventType: %d", string(ticket.Req.Payload), ticket.Req.Src, ticket.Req.Type)
 
 	err = s.services.WebhookService().HandleWebhook(ticket)
 	if err != nil {

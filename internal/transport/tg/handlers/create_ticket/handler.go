@@ -3,6 +3,7 @@ package create_ticket
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
@@ -11,22 +12,26 @@ import (
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/constructors"
 )
 
-const Command = "/create_ticket"
-
 type Handler struct {
-	regService serviceInterfaces.TicketsService
+	ticketServices serviceInterfaces.TicketsService
 }
 
-func New(regService serviceInterfaces.TicketsService) *Handler {
+func (h *Handler) GetCommand() string {
+	return commands.CreateTicket
+}
+
+func New(srv serviceInterfaces.Services) *Handler {
 	return &Handler{
-		regService: regService,
+		ticketServices: srv.TicketsService(),
 	}
 }
 
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
-	resp, err := h.regService.CreateBasicTicket(context.Background(), domain.CreateTicketRequest{
+	resp, err := h.ticketServices.CreateBasicTicket(context.Background(), domain.CreateTicketRequest{
 		OwnerTgId: uint64(in.From.ID),
 	})
 	if err != nil {
@@ -41,10 +46,11 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
 		return
 	}
-
-	out.SendMessage(response.NewMessage(fmt.Sprintf("Insert this url as webhook for project: %s\nTicket id is: %d",
-		webUrl,
-		resp.Id)))
+	out.SendMessage(&response.DeleteMessage{
+		ChatId:    in.Chat.ID,
+		MessageId: int64(in.MessageID),
+	})
+	out.SendMessage(constructors.GetEndState(fmt.Sprintf("Insert this url as webhook for project: " + webUrl + "\nTicket id is: " + strconv.FormatUint(resp.Id, 10))))
 }
 
 func (h *Handler) GetDescription() string {
