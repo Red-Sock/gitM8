@@ -10,18 +10,18 @@ type EventType int
 
 const (
 	Invalid EventType = iota
-
-	Comment
-	Ping
-
-	PullRequest
-	PullRequestComment
-	PullRequestReview
-
+	// Push - push to branch
 	Push
+	// Ping - healthcheck webhook
+	Ping
+	// Comment - comment in pr(not connected to code, connected to code and review (summary of comments to code))
+	Comment
+	// PullRequest - pr connected action
+	PullRequest
+
+	// Release - action connected to realising new code version (e.g. tag creation)
 	Release
 
-	CommitStatus
 	WorkflowJob
 	WorkflowRun
 	WorkflowManualStart
@@ -33,43 +33,39 @@ func (w *EventType) ParseGithub(in string) {
 
 func (w *EventType) String() string {
 	switch *w {
-	case Comment:
-		return "Commentary"
 	case Ping:
-		return "Webhook ping"
+		return "Webhook healthcheck"
+	case Comment:
+		return "Pull request comments"
 	case PullRequest:
-		return "Pull request"
-	case PullRequestComment:
-		return "Comment on pull request"
-	case PullRequestReview:
-		return "Review on pull request"
+		return "Pull request actions"
 	case Push:
-		return "Push to repository"
+		return "Pushes to branch"
 	case Release:
-		return "New release"
-	case CommitStatus:
-		return "Commit status"
+		return "Code releases"
 	case WorkflowJob:
 		return "Workflow job info"
 	case WorkflowRun:
 		return "Workflow info"
 	case WorkflowManualStart:
-		return "Workflow manual start"
+		return "Workflow manual start notifications"
 	default:
 		return "invalid type"
 	}
 }
 
 var githubEventsToDomain = map[string]EventType{
-	"commit_comment":              Comment,
-	"ping":                        Ping,
+	"ping": Ping,
+	"push": Push,
+
 	"pull_request":                PullRequest,
-	"pull_request_review_comment": PullRequestComment,
-	"pull_request_review":         PullRequestReview,
-	"push":                        Push,
-	"release":                     Release,
-	"status":                      CommitStatus,
-	"workflow_job":                WorkflowJob,
-	"workflow_run":                WorkflowRun,
-	"workflow_dispatch":           WorkflowManualStart,
+	"issue_comment":               Comment,
+	"pull_request_review_comment": Comment,
+	"pull_request_review":         Comment,
+
+	"release": Release,
+
+	"workflow_job":      WorkflowJob,
+	"workflow_run":      WorkflowRun,
+	"workflow_dispatch": WorkflowManualStart,
 }
