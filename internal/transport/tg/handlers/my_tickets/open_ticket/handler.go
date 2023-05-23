@@ -3,6 +3,7 @@ package open_ticket
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strconv"
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
@@ -28,16 +29,19 @@ OwnerId: %d
 type Handler struct {
 	tickets interfaces.TicketsService
 	rules   interfaces.RuleService
+
+	host string
 }
 
 func (h *Handler) GetCommand() string {
 	return commands.OpenTicketInfo
 }
 
-func New(servs interfaces.Services) *Handler {
+func New(servs interfaces.Services, host string) *Handler {
 	return &Handler{
 		tickets: servs.TicketsService(),
 		rules:   servs.RuleService(),
+		host:    host,
 	}
 }
 
@@ -61,9 +65,14 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		return
 	}
 
-	url, err := ticket.GetWebUrl()
+	webUrl, err := ticket.GetWebUrl()
 	if err != nil {
 		out.SendMessage(&response.MessageOut{Text: "Error creating web url of ticket: " + err.Error()})
+		return
+	}
+	webUrl, err = url.JoinPath(h.host, webUrl)
+	if err != nil {
+		out.SendMessage(&response.MessageOut{Text: "Error concatenating web url for ticket: " + err.Error()})
 		return
 	}
 
@@ -95,7 +104,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		Text: fmt.Sprintf(ticketInfoPattern,
 			ticket.Name,
 			ticket.Id,
-			url,
+			webUrl,
 			ticket.GitSystem.String(),
 			ticket.OwnerId,
 		),
