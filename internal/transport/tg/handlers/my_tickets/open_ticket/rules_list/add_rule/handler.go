@@ -77,7 +77,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		out.SendMessage(&response.MessageOut{Text: "Invalid rule type"})
 		return
 	case domain.RuleTypeWhitelist:
-		h.buildWhiteList(uint64(userResponse.MessageID), ticketId, uint64(userResponse.From.ID), out)
+		h.buildWhiteList(uint64(userResponse.MessageID), ticketId, out)
 		return
 	}
 
@@ -85,15 +85,4 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 func (h *Handler) GetDescription() string {
 	return "Opens rule creation menu for ticket with {{ id }}"
-}
-
-func (h *Handler) buildWhiteList(messageId, ticketId, userId uint64, out tgapi.Chat) {
-
-	msg := &response.EditMessage{
-		Text:      "Choose event that will trigger notification",
-		MessageId: int64(messageId),
-		Keys:      nil,
-	}
-
-	out.SendMessage(msg)
 }

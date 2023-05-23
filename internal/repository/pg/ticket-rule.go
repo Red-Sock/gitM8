@@ -23,7 +23,6 @@ func NewTicketRuleRepo(conn *pgx.Conn) *TicketRuleRepo {
 
 func (r *TicketRuleRepo) Add(ctx context.Context, req ...domain.TicketRule) error {
 	dbReq := model.NewTicketRules(req...)
-
 	_, err := r.conn.CopyFrom(ctx,
 		dbReq.GetIdentifier(),
 		dbReq.GetColumns(),
@@ -65,7 +64,7 @@ WHERE
 
 		switch ruleType {
 		case domain.RuleTypeWhitelist:
-			tr = &domain.RestrictingTicket{}
+			tr = &domain.TicketRuleWhitelist{}
 		}
 
 		err = encoder.MarshalFromGob(payload, tr)

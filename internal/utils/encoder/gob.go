@@ -8,15 +8,15 @@ import (
 )
 
 func MarshalToGob(req any) ([]byte, error) {
-	var payload []byte
-	enc := gob.NewEncoder(bytes.NewBuffer(payload))
+	payload := bytes.NewBuffer([]byte{})
+	enc := gob.NewEncoder(payload)
 
 	err := enc.Encode(req)
 	if err != nil {
-		return payload, errors.Wrap(err, "error marshalling ticket rule to bytes")
+		return payload.Bytes(), errors.Wrap(err, "error marshalling ticket rule to bytes")
 	}
 
-	return payload, nil
+	return payload.Bytes(), nil
 }
 
 func MarshalFromGob(b []byte, src any) error {

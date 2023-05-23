@@ -69,3 +69,16 @@ var githubEventsToDomain = map[string]EventType{
 	"workflow_run":      WorkflowRun,
 	"workflow_dispatch": WorkflowManualStart,
 }
+
+func GetEventTypes() []EventType {
+	return []EventType{
+		Push,
+		Ping,
+		Comment,
+		PullRequest,
+		Release,
+		WorkflowJob,
+		WorkflowRun,
+		WorkflowManualStart,
+	}
+}
