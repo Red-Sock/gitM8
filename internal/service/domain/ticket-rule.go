@@ -1,16 +1,32 @@
 package domain
 
-type ruleType int
+type RuleType int
 
 const (
-	RuleTypeWhitelist ruleType = iota
+	RuleTypeInvalid RuleType = iota
+	RuleTypeWhitelist
 )
+
+func (rt RuleType) String() string {
+	switch rt {
+	case RuleTypeWhitelist:
+		return "White list"
+	default:
+		return "Invalid"
+	}
+}
+
+func GetRulesTypes() []RuleType {
+	return []RuleType{
+		RuleTypeWhitelist,
+	}
+}
 
 // TicketRule indicates whether this event should notify user
 type TicketRule interface {
 	GetId() uint64
 	GetTicketId() uint64
-	GetType() ruleType
+	GetType() RuleType
 	Fire(in TicketRequest) (ok bool)
 }
 
@@ -18,7 +34,7 @@ type TicketRule interface {
 type RestrictingTicket struct {
 	Id        uint64
 	TicketId  uint64
-	WhiteList []Type
+	WhiteList []EventType
 }
 
 func (rt *RestrictingTicket) Fire(in TicketRequest) bool {
@@ -38,7 +54,7 @@ func (rt *RestrictingTicket) GetId() uint64 {
 	return rt.Id
 }
 
-func (rt *RestrictingTicket) GetType() ruleType {
+func (rt *RestrictingTicket) GetType() RuleType {
 	return RuleTypeWhitelist
 }
 

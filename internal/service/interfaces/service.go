@@ -9,6 +9,7 @@ import (
 type Services interface {
 	TicketsService() TicketsService
 	WebhookService() WebhookService
+	RuleService() RuleService
 }
 
 type TicketsService interface {
@@ -24,5 +25,6 @@ type WebhookService interface {
 }
 
 type RuleService interface {
-	AddRules(rules ...domain.TicketRule) error
+	AddRules(ctx context.Context, rules ...domain.TicketRule) error
+	GetRules(ctx context.Context, ticketId uint64) ([]domain.TicketRule, error)
 }

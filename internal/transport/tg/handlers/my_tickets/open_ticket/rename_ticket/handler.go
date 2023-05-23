@@ -11,20 +11,21 @@ import (
 	"github.com/Red-Sock/go_tg/model/response"
 
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/shared_commands"
-)
-
-const (
-	Command = "/rename-ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/constructors"
 )
 
 type Handler struct {
 	tickets interfaces.TicketsService
 }
 
-func New(tickets interfaces.TicketsService) *Handler {
+func (h *Handler) GetCommand() string {
+	return commands.RenameTicket
+}
+
+func New(srv interfaces.Services) *Handler {
 	return &Handler{
-		tickets: tickets,
+		tickets: srv.TicketsService(),
 	}
 }
 
@@ -57,7 +58,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		return
 	}
 
-	out.SendMessage(response.NewOpenMenu(shared_commands.MainMenu, in))
+	out.SendMessage(constructors.GetEndState("Name for ticket with id: " + strconv.FormatUint(ticketId, 10) + " has been changed to: " + name))
 }
 
 func (h *Handler) getNameFromUser(in *model.MessageIn, out tgapi.Chat) (string, error) {
@@ -75,6 +76,11 @@ func (h *Handler) getNameFromUser(in *model.MessageIn, out tgapi.Chat) (string, 
 	}
 
 	out.SendMessage(&response.DeleteMessage{MessageId: int64(rsp.MessageID)})
+	out.SendMessage(&response.DeleteMessage{MessageId: int64(in.MessageID)})
 
 	return rsp.Text, nil
+}
+
+func (h *Handler) GetDescription() string {
+	return "Renames ticket with {{ id }} to a given name"
 }

@@ -1,6 +1,6 @@
 app:
     info:
-        name: gitM8
+        name: gitm8
         startupDuration: 1m
         version: v0.0.1
 data_sources:

@@ -3,10 +3,11 @@ module github.com/Red-Sock/gitm8
 go 1.20
 
 require (
-	github.com/Red-Sock/go_tg v0.0.11
+	github.com/Red-Sock/go_tg v0.0.13
 	github.com/google/go-github/v50 v50.2.1-0.20230401171619-b1c53f808b22
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/pkg/errors v0.9.1
+	github.com/pressly/goose/v3 v3.11.2
 	github.com/sirupsen/logrus v1.9.0
 	golang.org/x/exp v0.0.0-20230420155640-133eef4313cb
 	golang.org/x/oauth2 v0.7.0
@@ -25,7 +26,7 @@ require (
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	golang.org/x/crypto v0.8.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect

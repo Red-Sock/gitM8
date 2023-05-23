@@ -7,17 +7,15 @@ import (
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
+	"github.com/Red-Sock/go_tg/model/keyboard"
 	"github.com/Red-Sock/go_tg/model/response"
-	"github.com/Red-Sock/go_tg/model/response/menu"
 
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
-	delete_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket/delete-ticket"
-	rename_ticket "github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my-tickets/open-ticket/rename-ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/assets"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
 )
 
 const (
-	Command = "/open-ticket"
-
 	ticketInfoPattern = `
 Name: %s
 Id: %d
@@ -29,11 +27,17 @@ OwnerId: %d
 
 type Handler struct {
 	tickets interfaces.TicketsService
+	rules   interfaces.RuleService
 }
 
-func New(tickets interfaces.TicketsService) *Handler {
+func (h *Handler) GetCommand() string {
+	return commands.OpenTicketInfo
+}
+
+func New(servs interfaces.Services) *Handler {
 	return &Handler{
-		tickets: tickets,
+		tickets: servs.TicketsService(),
+		rules:   servs.RuleService(),
 	}
 }
 
@@ -63,12 +67,25 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		return
 	}
 
-	buttons := &menu.InlineKeyboard{}
+	buttons := &keyboard.InlineKeyboard{}
 
 	strId := strconv.FormatUint(ticket.Id, 10)
-	buttons.AddButton("✍️Rename", rename_ticket.Command+" "+strId)
-	buttons.AddButton("🗑️Delete", delete_ticket.Command+" "+strId)
+	buttons.AddButton("✍️Rename", commands.RenameTicket+" "+strId)
 
+	rules, err := h.rules.GetRules(ctx, ticket.Id)
+	if err != nil {
+		out.SendMessage(&response.MessageOut{Text: "Error obtaining rules from db: " + err.Error()})
+		return
+	}
+	if len(rules) != 0 {
+		buttons.AddButton("📔Rules", commands.OpenRulesList+" "+strId)
+	} else {
+		buttons.AddButton("📝Add rule", commands.AddRule+" "+strId)
+	}
+
+	buttons.AddButton("🗑️Delete", commands.DeleteTicket+" "+strId)
+
+	buttons.AddReturnButton(assets.Back, commands.OpenMyTicketsList)
 	if ticket.Name == "" {
 		ticket.Name = "None"
 	}
@@ -84,4 +101,8 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		),
 		Keys: buttons,
 	})
+}
+
+func (h *Handler) GetDescription() string {
+	return "Returns information about ticket with {{ id }}"
 }
