@@ -38,6 +38,6 @@ type TicketRepo interface {
 }
 
 type RulesRepo interface {
-	Add(ctx context.Context, rule domain.TicketRule) error
-	//Get(ctx context.Context) (domain.TicketRule, error)
+	Add(ctx context.Context, rule ...domain.TicketRule) error
+	Get(ctx context.Context, ticketId uint64) ([]domain.TicketRule, error)
 }

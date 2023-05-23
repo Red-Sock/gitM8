@@ -6,23 +6,26 @@ import (
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
+	"github.com/Red-Sock/go_tg/model/keyboard"
 	"github.com/Red-Sock/go_tg/model/response"
-	"github.com/Red-Sock/go_tg/model/response/menu"
 	"github.com/sirupsen/logrus"
 
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/assets"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
 )
-
-const Command = "/my_tickets"
 
 type Handler struct {
 	tickets serviceInterfaces.TicketsService
 }
 
-func New(regService serviceInterfaces.TicketsService) *Handler {
+func (h *Handler) GetCommand() string {
+	return commands.OpenMyTicketsList
+}
+
+func New(srv serviceInterfaces.Services) *Handler {
 	return &Handler{
-		tickets: regService,
+		tickets: srv.TicketsService(),
 	}
 }
 
@@ -43,7 +46,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		return
 	}
 
-	buttons := &menu.InlineKeyboard{}
+	buttons := &keyboard.InlineKeyboard{}
 
 	buttons.Rows = uint8(len(tickets))
 	buttons.Columns = 1
@@ -54,13 +57,15 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 			return
 		}
-		cmd := open_ticket.Command + " " + strconv.FormatUint(item.Id, 10)
+		cmd := commands.OpenTicketInfo + " " + strconv.FormatUint(item.Id, 10)
 		if item.Name != "" {
-			buttons.AddButton("🟩"+item.Name, cmd)
+			buttons.AddButton(assets.GreenSquare+item.Name, cmd)
 		} else {
-			buttons.AddButton("🟨"+url, cmd)
+			buttons.AddButton(assets.YellowSquare+url, cmd)
 		}
 	}
+
+	buttons.AddReturnButton(assets.Back, commands.MainMenu)
 
 	out.SendMessage(&response.EditMessage{
 		Text:      "🎫My tickets",

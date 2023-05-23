@@ -5,30 +5,31 @@ import (
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
+	"github.com/Red-Sock/go_tg/model/keyboard"
 	"github.com/Red-Sock/go_tg/model/response"
-	"github.com/Red-Sock/go_tg/model/response/menu"
 
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/create_ticket"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
 )
-
-const Command = "/start"
 
 type Handler struct {
 	tickets serviceInterfaces.TicketsService
 }
 
-func New(regService serviceInterfaces.TicketsService) *Handler {
+func (h *Handler) GetCommand() string {
+	return commands.MainMenu
+}
+
+func New(srv serviceInterfaces.Services) *Handler {
 	return &Handler{
-		tickets: regService,
+		tickets: srv.TicketsService(),
 	}
 }
 
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
-	menuKeyboard := &menu.InlineKeyboard{}
+	menuKeyboard := &keyboard.InlineKeyboard{}
 	menuKeyboard.Columns = 2
-	menuKeyboard.AddButton("🔗Get url for webhook", create_ticket.Command)
+	menuKeyboard.AddButton("🔗Get url for webhook", commands.CreateTicket)
 
 	tickets, err := h.tickets.GetByUser(context.Background(), uint64(in.From.ID))
 	if err != nil {
@@ -38,13 +39,22 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	}
 
 	if len(tickets) > 0 {
-		menuKeyboard.AddButton("🎫My tickets", my_tickets.Command)
+		menuKeyboard.AddButton("🎫My tickets", commands.OpenMyTicketsList)
 	}
 
-	out.SendMessage(&response.MessageOut{
-		Text: "Main menu",
-		Keys: menuKeyboard,
-	})
+	if in.IsCallback {
+		out.SendMessage(&response.EditMessage{
+			Text:      "Main menu",
+			MessageId: int64(in.MessageID),
+			Keys:      menuKeyboard,
+		})
+	} else {
+		out.SendMessage(&response.MessageOut{
+			Text: "Main menu",
+			Keys: menuKeyboard,
+		})
+	}
+
 }
 
 func (h *Handler) GetDescription() string {

@@ -6,23 +6,25 @@ import (
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
+	"github.com/Red-Sock/go_tg/model/keyboard"
 	"github.com/Red-Sock/go_tg/model/response"
 
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/shared_commands"
-)
-
-const (
-	Command = "/delete_ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/assets"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
 )
 
 type Handler struct {
 	tickets interfaces.TicketsService
 }
 
-func New(tickets interfaces.TicketsService) *Handler {
+func (h *Handler) GetCommand() string {
+	return commands.DeleteTicket
+}
+
+func New(srv interfaces.Services) *Handler {
 	return &Handler{
-		tickets: tickets,
+		tickets: srv.TicketsService(),
 	}
 }
 
@@ -41,11 +43,23 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 	err = h.tickets.Delete(ctx, ticketId, uint64(in.From.ID))
 	if err != nil {
-		out.SendMessage(&response.MessageOut{Text: "Error changing name for ticket with id " + in.Args[0] + " to " + in.Args[1]})
+		out.SendMessage(&response.MessageOut{Text: "Error deleting ticket with id " + in.Args[0]})
 		return
 	}
 
-	out.SendMessage(response.NewOpenMenu(shared_commands.MainMenu, in))
+	out.SendMessage(&response.DeleteMessage{
+		ChatId:    in.Chat.ID,
+		MessageId: int64(in.MessageID),
+	})
+
+	buttons := &keyboard.InlineKeyboard{}
+	buttons.AddButton(assets.Back+"Return to main menu", commands.MainMenu)
+	buttons.AddButton(assets.Back+"Return to tickets list", commands.OpenMyTicketsList)
+
+	out.SendMessage(&response.MessageOut{
+		Text: "Ticket with id: " + strconv.FormatUint(ticketId, 10) + " has been successfully deleted",
+		Keys: buttons,
+	})
 }
 
 func (h *Handler) GetDescription() string {

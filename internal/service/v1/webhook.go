@@ -23,6 +23,7 @@ func NewWebhookService() *WebhookService {
 
 func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 	ctx := context.Background()
+
 	ticket, err := w.tickets.Get(ctx, req.OwnerId, req.Uri)
 	if err != nil {
 		return errors.Wrap(err, "error from repository")
@@ -34,16 +35,20 @@ func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 
 	switch ticket.GitSystem {
 	case domain.RepoTypeGithub:
-		return w.handleGithub(req)
+		return w.handleGithub(ctx, req, ticket)
 	}
 
 	return nil
 }
 
-func (w *WebhookService) handleGithub(req domain.TicketRequest) error {
+func (w *WebhookService) handleGithub(ctx context.Context, req domain.TicketRequest, ticket domain.Ticket) error {
+	rules, err := w.rules.Get(ctx, ticket.Id)
+	if err != nil {
+		return errors.Wrap(err, "error obtaining rules")
+	}
+
+	_ = rules
 
 	//w.chat.Send()
-
-	// TODO
 	return nil
 }
