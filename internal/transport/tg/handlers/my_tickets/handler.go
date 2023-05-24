@@ -8,11 +8,11 @@ import (
 	"github.com/Red-Sock/go_tg/model"
 	"github.com/Red-Sock/go_tg/model/keyboard"
 	"github.com/Red-Sock/go_tg/model/response"
-	"github.com/sirupsen/logrus"
 
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/assets"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/constructors"
 )
 
 type Handler struct {
@@ -34,15 +34,12 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 	tickets, err := h.tickets.GetByUser(ctx, uint64(in.From.ID))
 	if err != nil {
-		logrus.Errorf("error getting tickets: %s", err)
-		out.SendMessage(&response.MessageOut{Text: "internal server error: " + err.Error()})
+		out.SendMessage(constructors.GetEndState("internal server error: " + err.Error()))
 		return
 	}
 
 	if len(tickets) == 0 {
-		out.SendMessage(&response.MessageOut{
-			Text: "No ticket registered",
-		})
+		out.SendMessage(constructors.GetEndState("No ticket registered"))
 		return
 	}
 

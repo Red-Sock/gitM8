@@ -10,6 +10,8 @@ github.com/Red-Sock/go_tg v0.0.12 h1:jfSwrsKhxDtnA/BnQYwcJDVq+BNH7SkFM0IDnkN9rvk
 github.com/Red-Sock/go_tg v0.0.12/go.mod h1:zOQ7l6ymmkFEKMVADRTYF7Ed0oGnlBUsH3MDZmnbeH8=
 github.com/Red-Sock/go_tg v0.0.13 h1:jB2Iry2LLOprFYpzhFJocJMAT7Iw6k/q/yTud7pmQjA=
 github.com/Red-Sock/go_tg v0.0.13/go.mod h1:zOQ7l6ymmkFEKMVADRTYF7Ed0oGnlBUsH3MDZmnbeH8=
+github.com/Red-Sock/go_tg v0.0.14 h1:FLWHmzSYlCGWST93ou+hvOVaN/AvNp2FWQCy2MLGanQ=
+github.com/Red-Sock/go_tg v0.0.14/go.mod h1:zOQ7l6ymmkFEKMVADRTYF7Ed0oGnlBUsH3MDZmnbeH8=
 github.com/andybalholm/brotli v1.0.5 h1:8uQZIdzKmjc/iuPu7O2ioW48L81FgatrcpfFmiq/cCs=
 github.com/bwesterb/go-ristretto v1.2.0/go.mod h1:fUIoIZaG73pV5biE2Blr2xEzDoMj7NFEuV9ekS419A0=
 github.com/bwesterb/go-ristretto v1.2.2 h1:S2C0mmSjCLS3H9+zfXoIoKzl+cOncvBvt6pE+zTm5Ms=
