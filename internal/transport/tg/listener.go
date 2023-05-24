@@ -24,9 +24,9 @@ type Server struct {
 	bot *client.Bot
 }
 
-func New(cfg *config.Config, srvs interfaces.Services) (s *Server) {
+func New(cfg *config.Config, bot *client.Bot, srvs interfaces.Services) (s *Server) {
 	s = &Server{}
-	s.bot = client.NewBot(cfg.GetString(config.ServerTgAPIKey))
+	s.bot = bot
 
 	{
 		s.bot.AddCommandHandler(main_menu.New(srvs))

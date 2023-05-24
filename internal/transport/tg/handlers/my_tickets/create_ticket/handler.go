@@ -3,8 +3,8 @@ package create_ticket
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"strconv"
+	"strings"
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
@@ -53,12 +53,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		MessageId: int64(in.MessageID),
 	})
 
-	webUrl, err = url.JoinPath(h.host, webUrl)
-	if err != nil {
-		logrus.Errorf("error creating weburl of ticket: %s", err)
-		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
-		return
-	}
+	webUrl = strings.Join([]string{h.host, webUrl}, "/")
 
 	out.SendMessage(constructors.GetEndState(fmt.Sprintf("Insert this url as webhook for project: " + webUrl + "\nTicket id is: " + strconv.FormatUint(resp.Id, 10))))
 }

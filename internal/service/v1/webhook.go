@@ -7,18 +7,22 @@ import (
 
 	dataInterfaces "github.com/Red-Sock/gitm8/internal/repository/interfaces"
 	"github.com/Red-Sock/gitm8/internal/service/domain"
-	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
 )
 
 type WebhookService struct {
 	tickets dataInterfaces.TicketRepo
 	rules   dataInterfaces.RulesRepo
 
-	chat serviceInterfaces.Chat
+	chat interfaces.Chat
 }
 
-func NewWebhookService() *WebhookService {
-	return &WebhookService{}
+func NewWebhookService(repository dataInterfaces.Repository, chat interfaces.Chat) *WebhookService {
+	return &WebhookService{
+		tickets: repository.Ticket(),
+		rules:   repository.Rule(),
+		chat:    chat,
+	}
 }
 
 func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
@@ -26,7 +30,7 @@ func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 
 	ticket, err := w.tickets.Get(ctx, req.OwnerId, req.Uri)
 	if err != nil {
-		return errors.Wrap(err, "error from repository")
+		return errors.Wrap(err, "error from ticket repository")
 	}
 
 	if ticket.GitSystem == domain.RepoTypeUnknown {
@@ -45,6 +49,12 @@ func (w *WebhookService) handleGithub(ctx context.Context, req domain.TicketRequ
 	rules, err := w.rules.GetByTicketId(ctx, ticket.Id, req.OwnerId)
 	if err != nil {
 		return errors.Wrap(err, "error obtaining rules")
+	}
+
+	for _, rule := range rules {
+		if !rule.Fire(req) {
+			return nil
+		}
 	}
 
 	_ = rules

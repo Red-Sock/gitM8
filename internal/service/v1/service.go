@@ -14,7 +14,7 @@ type Service struct {
 	webhookSrv interfaces.WebhookService
 }
 
-func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
+func NewService(ctx context.Context, cfg *config.Config, chat interfaces.Chat) (*Service, error) {
 	pgRepo, err := pg.NewRepository(ctx, cfg)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
 
 	return &Service{
 		regSrv:     NewRegistrationService(pgRepo, cfg),
-		webhookSrv: NewWebhookService(),
+		webhookSrv: NewWebhookService(pgRepo, chat),
 		ruleSrv:    NewRuleService(pgRepo),
 	}, nil
 }

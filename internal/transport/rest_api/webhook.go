@@ -1,17 +1,19 @@
 package rest_api
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
+
+var ErrParsingWebHookPath = errors.New("error parsing arguments from path on webhook request")
 
 const (
 	githubHeader = "X-GitHub-Event"
@@ -43,7 +45,6 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	logrus.Infof("Payload: %s, Src: %d, EventType: %d", string(ticket.Req.Payload), ticket.Req.Src, ticket.Req.Type)
 
 	err = s.services.WebhookService().HandleWebhook(ticket)
 	if err != nil {
@@ -54,16 +55,15 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 }
 
 func extractWebhookPath(pth string) (ownerId uint64, ticketUUID string, err error) {
+	pth = strings.TrimLeft(pth, "/")
 	pathArgs := strings.Split(pth, "/")
-	if len(pathArgs) < 4 {
-		return 0, "", errors.New("error parsing arguments from path on webhook request")
+	if len(pathArgs) < 2 {
+		return 0, "", errors.Wrap(ErrParsingWebHookPath, "path should consist of 2 elements {{ user_id }} and {{ uuid_of_ticket }}")
 	}
 
-	pathArgs = pathArgs[2:]
-
-	ownerId, err = strconv.ParseUint(pathArgs[0], 10, 10)
+	ownerId, err = strconv.ParseUint(pathArgs[0], 10, 64)
 	if err != nil {
-		return 0, "", errors.Join(errors.New("error parsing ownerId from webhookRequest: %s"), err)
+		return 0, "", errors.Wrap(err, "error parsing ownerId from webhookRequest: %s")
 	}
 
 	ticketUUID = pathArgs[1]

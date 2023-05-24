@@ -53,10 +53,10 @@ AND
 		ownerId,
 		uri).
 		Scan(
-			out.Id,
-			out.Name,
-			out.OwnerId,
-			out.URI,
+			&out.Id,
+			&out.Name,
+			&out.OwnerId,
+			&out.URI,
 		)
 
 	if err != nil {
