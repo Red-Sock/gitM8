@@ -3,7 +3,7 @@ module github.com/Red-Sock/gitm8
 go 1.20
 
 require (
-	github.com/Red-Sock/go_tg v0.0.13
+	github.com/Red-Sock/go_tg v0.0.14
 	github.com/google/go-github/v50 v50.2.1-0.20230401171619-b1c53f808b22
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/pkg/errors v0.9.1

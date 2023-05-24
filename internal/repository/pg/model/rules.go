@@ -29,7 +29,7 @@ func (tr *TicketRules) Next() bool {
 }
 
 func (tr *TicketRules) Values() ([]any, error) {
-	payload, err := encoder.MarshalToGob(tr.rules[tr.idx])
+	payload, err := encoder.MarshalTo(tr.rules[tr.idx])
 	if err != nil {
 		tr.err = stderr.Join(tr.err, err)
 		return nil, errors.Wrap(err, "error marshalling ticket rule")

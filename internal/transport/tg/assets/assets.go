@@ -4,5 +4,12 @@ const (
 	GreenSquare  = "🟩"
 	YellowSquare = "🟨"
 
-	Back = "🔙"
+	Confirm = "⦿"
+
+	Back    = "🔙"
+	Checked = "✓"
+
+	Trash = "🗑"
+
+	Edit = "✎"
 )
