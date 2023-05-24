@@ -162,3 +162,24 @@ AND   owner_id = $2
 	}
 	return nil
 }
+
+func (t *TicketRepo) HasAccess(ctx context.Context, ticketId, userId uint64) (bool, error) {
+	var resp bool
+
+	err := t.conn.QueryRow(ctx, `
+SELECT
+    EXISTS(
+    	SELECT 0 
+    	FROM   tickets 
+    	WHERE  id = $1 
+    	AND    owner_id = $2
+    )`,
+		ticketId,
+		userId,
+	).Scan(&resp)
+	if err != nil {
+		return false, errors.Wrap(err, "error obtaining response from database")
+	}
+
+	return resp, nil
+}

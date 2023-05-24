@@ -8,4 +8,8 @@ const (
 
 	Back    = "🔙"
 	Checked = "✓"
+
+	Trash = "🗑"
+
+	Edit = "✎"
 )

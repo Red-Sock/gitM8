@@ -1,31 +1,13 @@
 package encoder
 
 import (
-	"bytes"
-	"encoding/gob"
-
-	"github.com/pkg/errors"
+	"encoding/json"
 )
 
-func MarshalToGob(req any) ([]byte, error) {
-	payload := bytes.NewBuffer([]byte{})
-	enc := gob.NewEncoder(payload)
-
-	err := enc.Encode(req)
-	if err != nil {
-		return payload.Bytes(), errors.Wrap(err, "error marshalling ticket rule to bytes")
-	}
-
-	return payload.Bytes(), nil
+func MarshalTo(req any) ([]byte, error) {
+	return json.Marshal(req)
 }
 
-func MarshalFromGob(b []byte, src any) error {
-	enc := gob.NewDecoder(bytes.NewBuffer(b))
-
-	err := enc.Decode(src)
-	if err != nil {
-		return errors.Wrap(err, "error marshalling ticket rule to bytes")
-	}
-
-	return nil
+func MarshalFrom(b []byte, src any) error {
+	return json.Unmarshal(b, src)
 }

@@ -13,6 +13,8 @@ import (
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/constructors"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/rules/rule_constructors"
 )
 
 type Handler struct {
@@ -31,17 +33,13 @@ func New(srv interfaces.Services) *Handler {
 
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	if len(in.Args) == 0 {
-		out.SendMessage(&response.MessageOut{
-			Text: "Adding rule requires 1 argument: id of ticket",
-		})
+		out.SendMessage(constructors.GetEndState("Adding rule requires 1 argument: id of ticket"))
 		return
 	}
 
 	ticketId, err := strconv.ParseUint(in.Args[0], 10, 64)
 	if err != nil {
-		out.SendMessage(&response.MessageOut{
-			Text: "Ticket id must be positive integer. Got " + in.Args[0],
-		})
+		out.SendMessage(constructors.GetEndState("Ticket id must be positive integer. Got " + in.Args[0]))
 		return
 	}
 
@@ -63,24 +61,29 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 	userResponse, err := out.GetInput(ctx)
 	if err != nil {
-		out.SendMessage(&response.MessageOut{Text: "Error obtaining input from user: " + err.Error()})
+		out.SendMessage(constructors.GetEndState("Error obtaining input from user: " + err.Error()))
 		return
 	}
 
 	ruleIdx, err := strconv.Atoi(userResponse.Text)
 	if err != nil {
-		out.SendMessage(&response.MessageOut{Text: "Expected positive integer - index of rule type from given list, got " + userResponse.Text + ". Error parsing: " + err.Error()})
-		return
-	}
-	switch domain.RuleType(ruleIdx) {
-	case domain.RuleTypeInvalid:
-		out.SendMessage(&response.MessageOut{Text: "Invalid rule type"})
-		return
-	case domain.RuleTypeWhitelist:
-		h.buildWhiteList(uint64(userResponse.MessageID), ticketId, out)
+		out.SendMessage(constructors.GetEndState("Expected positive integer - index of rule type from given list, got " + userResponse.Text + ". Error parsing: " + err.Error()))
 		return
 	}
 
+	constr, err := rule_constructors.SelectConstructor(domain.RuleType(ruleIdx), h.rs, uint64(in.MessageID), ticketId)
+	if err != nil {
+		out.SendMessage(constructors.GetEndState("Error selecting constructor for rule. No such constructor"))
+		return
+	}
+
+	err = h.rs.AddRules(context.Background(), constr.Build(out))
+	if err != nil {
+		out.SendMessage(constructors.GetEndState("Error saving rule for ticket: " + err.Error()))
+		return
+	}
+
+	out.SendMessage(constructors.GetEndState("Successfully created a whitelist rule"))
 }
 
 func (h *Handler) GetDescription() string {

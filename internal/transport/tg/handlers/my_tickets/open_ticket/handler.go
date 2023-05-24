@@ -81,16 +81,15 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	strId := strconv.FormatUint(ticket.Id, 10)
 	buttons.AddButton("✍️Rename", commands.RenameTicket+" "+strId)
 
-	rules, err := h.rules.GetRules(ctx, ticket.Id)
+	rules, err := h.rules.GetRulesByTicketId(ctx, ticket.Id, uint64(in.From.ID))
 	if err != nil {
 		out.SendMessage(&response.MessageOut{Text: "Error obtaining rules from db: " + err.Error()})
 		return
 	}
 	if len(rules) != 0 {
 		buttons.AddButton("📔Rules", commands.OpenRulesList+" "+strId)
-	} else {
-		buttons.AddButton("📝Add rule", commands.AddRule+" "+strId)
 	}
+	buttons.AddButton("📝Add rule", commands.AddRule+" "+strId)
 
 	buttons.AddButton("🗑️Delete", commands.DeleteTicket+" "+strId)
 

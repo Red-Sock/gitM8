@@ -42,7 +42,7 @@ func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 }
 
 func (w *WebhookService) handleGithub(ctx context.Context, req domain.TicketRequest, ticket domain.Ticket) error {
-	rules, err := w.rules.Get(ctx, ticket.Id)
+	rules, err := w.rules.GetByTicketId(ctx, ticket.Id, req.OwnerId)
 	if err != nil {
 		return errors.Wrap(err, "error obtaining rules")
 	}

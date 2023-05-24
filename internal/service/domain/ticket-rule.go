@@ -27,14 +27,15 @@ type TicketRule interface {
 	GetId() uint64
 	GetTicketId() uint64
 	GetType() RuleType
+	String() string
 	Fire(in TicketRequest) (ok bool)
 }
 
 // TicketRuleWhitelist - whitelist for webhook types for ticket
 type TicketRuleWhitelist struct {
-	Id        uint64
-	TicketId  uint64
-	WhiteList []EventType
+	Id        uint64      `json:"-"`
+	TicketId  uint64      `json:"-"`
+	WhiteList []EventType `json:"white_list"`
 }
 
 func (rt *TicketRuleWhitelist) Fire(in TicketRequest) bool {
@@ -60,6 +61,16 @@ func (rt *TicketRuleWhitelist) GetType() RuleType {
 
 func (rt *TicketRuleWhitelist) GetTicketId() uint64 {
 	return rt.TicketId
+}
+
+func (rt *TicketRuleWhitelist) String() string {
+	out := "Whitelist on events\n"
+
+	for _, item := range rt.WhiteList {
+		out += item.String() + "\n"
+	}
+
+	return out
 }
 
 // TODO rules for more specific restrictions

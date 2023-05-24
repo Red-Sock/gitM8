@@ -38,7 +38,6 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		OwnerTgId: uint64(in.From.ID),
 	})
 	if err != nil {
-		logrus.Errorf("error creating basic ticket: %s", err)
 		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
 		return
 	}
