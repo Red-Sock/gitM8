@@ -17,6 +17,7 @@ type Repository interface {
 	User() UserRepo
 	Ticket() TicketRepo
 	Rule() RulesRepo
+	Subscriptions() Subscriptions
 }
 
 type UserRepo interface {
@@ -44,4 +45,9 @@ type RulesRepo interface {
 	GetByTicketId(ctx context.Context, ticketId, userId uint64) ([]domain.TicketRule, error)
 	GetById(ctx context.Context, ruleId, userId uint64) (domain.TicketRule, error)
 	DeleteById(ctx context.Context, ruleId, userId uint64) error
+}
+
+type Subscriptions interface {
+	AddSubscriber(ctx context.Context, subscription domain.Subscription) error
+	GetSubscribers(ctx context.Context, ticketId uint64) ([]domain.Subscription, error)
 }

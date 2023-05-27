@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
+	ghmodel "github.com/Red-Sock/gitm8/internal/clients/git/model"
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
@@ -29,7 +30,8 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	ticket.Req.Payload, err = io.ReadAll(req.Body)
+
+	payload, err := io.ReadAll(req.Body)
 	if err != nil {
 		logrus.Errorf("error reading webhook body: %s", err)
 		rw.WriteHeader(http.StatusBadRequest)
@@ -38,8 +40,17 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 
 	switch {
 	case req.Header.Get(githubHeader) != "":
-		ticket.Req.Src = domain.RepoTypeGithub
-		ticket.Req.Type.ParseGithub(req.Header.Get(githubHeader))
+		var eventType domain.EventType
+		eventType.ParseGithub(req.Header.Get(githubHeader))
+
+		wh, err := ghmodel.SelectModel(eventType, payload)
+		if err != nil {
+			logrus.Errorf("error selecting proper webhook model: %s", err)
+			rw.WriteHeader(http.StatusInternalServerError)
+		}
+
+		ticket.Payload = wh
+		ticket.RepoType = domain.RepoTypeGithub
 	default:
 		logrus.Errorf("error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
 		rw.WriteHeader(http.StatusInternalServerError)

@@ -9,9 +9,10 @@ import (
 )
 
 type Service struct {
-	regSrv     interfaces.TicketsService
-	ruleSrv    interfaces.RuleService
-	webhookSrv interfaces.WebhookService
+	regSrv               interfaces.TicketsService
+	ruleSrv              interfaces.RuleService
+	webhookSrv           interfaces.WebhookService
+	messagingConstructor interfaces.MessageConstructor
 }
 
 func NewService(ctx context.Context, cfg *config.Config, chat interfaces.Chat) (*Service, error) {
@@ -20,10 +21,13 @@ func NewService(ctx context.Context, cfg *config.Config, chat interfaces.Chat) (
 		return nil, err
 	}
 
+	messagingConstructor := NewMessageConstructor(pgRepo)
+
 	return &Service{
-		regSrv:     NewRegistrationService(pgRepo, cfg),
-		webhookSrv: NewWebhookService(pgRepo, chat),
-		ruleSrv:    NewRuleService(pgRepo),
+		regSrv:               NewRegistrationService(pgRepo, cfg),
+		webhookSrv:           NewWebhookService(pgRepo, messagingConstructor, chat),
+		ruleSrv:              NewRuleService(pgRepo),
+		messagingConstructor: messagingConstructor,
 	}, nil
 }
 

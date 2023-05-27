@@ -15,13 +15,16 @@ type WebhookService struct {
 	rules   dataInterfaces.RulesRepo
 
 	chat interfaces.Chat
+
+	msgConstr interfaces.MessageConstructor
 }
 
-func NewWebhookService(repository dataInterfaces.Repository, chat interfaces.Chat) *WebhookService {
+func NewWebhookService(repository dataInterfaces.Repository, msgConstructor interfaces.MessageConstructor, chat interfaces.Chat) *WebhookService {
 	return &WebhookService{
-		tickets: repository.Ticket(),
-		rules:   repository.Rule(),
-		chat:    chat,
+		tickets:   repository.Ticket(),
+		rules:     repository.Rule(),
+		chat:      chat,
+		msgConstr: msgConstructor,
 	}
 }
 
@@ -33,8 +36,10 @@ func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 		return errors.Wrap(err, "error from ticket repository")
 	}
 
+	req.TicketId = ticket.Id
+
 	if ticket.GitSystem == domain.RepoTypeUnknown {
-		ticket.GitSystem = req.Req.Src
+		ticket.GitSystem = req.RepoType
 	}
 
 	switch ticket.GitSystem {
@@ -57,8 +62,14 @@ func (w *WebhookService) handleGithub(ctx context.Context, req domain.TicketRequ
 		}
 	}
 
-	_ = rules
+	msgs, err := w.msgConstr.Parse(req)
+	if err != nil {
+		return errors.Wrap(err, "error parsing incoming hook payload to message")
+	}
 
-	//w.chat.Send()
+	for _, item := range msgs {
+		w.chat.Send(item)
+	}
+
 	return nil
 }
