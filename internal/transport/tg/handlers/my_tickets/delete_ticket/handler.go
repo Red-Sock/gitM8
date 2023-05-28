@@ -42,7 +42,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 	err = h.tickets.Delete(ctx, ticketId, uint64(in.From.ID))
 	if err != nil {
-		out.SendMessage(constructors.GetEndState("Error deleting ticket with id " + in.Args[0]))
+		out.SendMessage(constructors.GetEndState("Error deleting ticket with id " + in.Args[0] + ": " + err.Error()))
 		return
 	}
 

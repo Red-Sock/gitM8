@@ -19,4 +19,5 @@ func (t *Ticket) GetWebUrl() (string, error) {
 
 type CreateTicketRequest struct {
 	OwnerTgId uint64
+	ChatId    uint64
 }

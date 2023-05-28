@@ -35,7 +35,7 @@ type TicketRepo interface {
 	GetById(ctx context.Context, ownerId, id uint64) (domain.Ticket, error)
 	GetByUser(ctx context.Context, userID uint64) ([]domain.Ticket, error)
 	Rename(ctx context.Context, ownerId, id uint64, newName string) error
-	Delete(ctx context.Context, ownerId, id uint64) error
+	Delete(ctx context.Context, id uint64) error
 	HasAccess(ctx context.Context, ticketId, userId uint64) (bool, error)
 }
 

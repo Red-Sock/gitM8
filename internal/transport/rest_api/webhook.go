@@ -47,6 +47,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			logrus.Errorf("error selecting proper webhook model: %s", err)
 			rw.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		ticket.Payload = wh
@@ -63,6 +64,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	_, _ = rw.Write([]byte(`OK`))
 }
 
 func extractWebhookPath(pth string) (ownerId uint64, ticketUUID string, err error) {

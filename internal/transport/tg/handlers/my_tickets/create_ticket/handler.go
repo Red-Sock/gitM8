@@ -36,6 +36,7 @@ func New(srv serviceInterfaces.Services, host string) *Handler {
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	resp, err := h.ticketServices.CreateBasicTicket(context.Background(), domain.CreateTicketRequest{
 		OwnerTgId: uint64(in.From.ID),
+		ChatId:    uint64(in.Chat.ID),
 	})
 	if err != nil {
 		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))

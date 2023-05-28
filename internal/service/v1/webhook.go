@@ -36,6 +36,10 @@ func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 		return errors.Wrap(err, "error from ticket repository")
 	}
 
+	if ticket.Id == 0 {
+		return nil
+	}
+
 	req.TicketId = ticket.Id
 
 	if ticket.GitSystem == domain.RepoTypeUnknown {

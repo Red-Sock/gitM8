@@ -5,6 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
@@ -33,6 +34,7 @@ INSERT INTO tickets
 	if err != nil {
 		return req, err
 	}
+
 	return req, nil
 }
 
@@ -60,7 +62,10 @@ AND
 		)
 
 	if err != nil {
-		return out, errors.Wrap(err, "error executing select for ticket via ownerID and uri")
+		if errors.Is(err, pgx.ErrNoRows) {
+			return domain.Ticket{}, nil
+		}
+		return domain.Ticket{}, errors.Wrap(err, "error executing select for ticket via ownerID and uri")
 	}
 
 	return out, nil
@@ -110,6 +115,7 @@ WHERE
 `,
 		userID)
 	defer rows.Close()
+
 	out := make([]domain.Ticket, 0, 1)
 	for rows.Next() {
 		var tck domain.Ticket
@@ -147,19 +153,29 @@ AND   owner_id = $3
 	return nil
 }
 
-func (t *TicketRepo) Delete(ctx context.Context, userId, ticketId uint64) error {
-	_, err := t.conn.Exec(ctx,
-		`
-DELETE FROM tickets 
-WHERE id       = $1
-AND   owner_id = $2
-`,
-		userId,
-		ticketId,
-	)
+func (t *TicketRepo) Delete(ctx context.Context, ticketId uint64) error {
+	// TODO rethink value of dropping linked tables onto doing so at a service layer
+	// TODO in addition to that - this mess down here must exists in order to work properly
+	// TODO otherwise. connection block for ever
+	batch := &pgx.Batch{}
+
+	batch.Queue(`DELETE FROM ticket_rules  WHERE ticket_id = $1`, ticketId)
+	batch.Queue(`DELETE FROM subscriptions WHERE ticket_id = $1`, ticketId)
+	batch.Queue(`DELETE FROM tickets       WHERE id        = $1`, ticketId)
+
+	btch := t.conn.SendBatch(ctx, batch)
+
+	defer func() {
+		err := btch.Close()
+		if err != nil {
+			logrus.Errorf("error closing connection after batch while deleting ticket %s", err)
+		}
+	}()
+	_, err := btch.Exec()
 	if err != nil {
 		return errors.Wrap(err, "error updating on data layer")
 	}
+
 	return nil
 }
 

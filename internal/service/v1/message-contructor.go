@@ -47,9 +47,8 @@ func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.Messag
 func (m *MessageConstructor) extractMessage(payload domain.Payload) (string, error) {
 	switch payload.GetEventType() {
 	case domain.Push:
-		return payload.GetAuthor().Name +
-			" has pushed to " +
-			payload.GetProject().Name + payload.GetSrcBranch().Name, nil
+		return payload.GetAuthor().Name + " has pushed to " + payload.GetProject().Name + ".\n" +
+			"Branch " + payload.GetSrcBranch().Name, nil
 	case domain.Ping:
 		// TODO GITM-8
 		return payload.GetProject().Name + " successfully has been pinged!", nil
