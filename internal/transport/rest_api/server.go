@@ -36,7 +36,7 @@ func NewServer(cfg *config.Config, services interfaces.Services) *Server {
 	}
 
 	r.HandleFunc("/version", s.Version)
-	r.HandleFunc("/webhooks/", s.Webhook)
+	r.HandleFunc("/", s.Webhook)
 	return s
 }
 

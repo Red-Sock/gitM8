@@ -7,18 +7,25 @@ import (
 
 	dataInterfaces "github.com/Red-Sock/gitm8/internal/repository/interfaces"
 	"github.com/Red-Sock/gitm8/internal/service/domain"
-	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/service/interfaces"
 )
 
 type WebhookService struct {
 	tickets dataInterfaces.TicketRepo
 	rules   dataInterfaces.RulesRepo
 
-	chat serviceInterfaces.Chat
+	chat interfaces.Chat
+
+	msgConstr interfaces.MessageConstructor
 }
 
-func NewWebhookService() *WebhookService {
-	return &WebhookService{}
+func NewWebhookService(repository dataInterfaces.Repository, msgConstructor interfaces.MessageConstructor, chat interfaces.Chat) *WebhookService {
+	return &WebhookService{
+		tickets:   repository.Ticket(),
+		rules:     repository.Rule(),
+		chat:      chat,
+		msgConstr: msgConstructor,
+	}
 }
 
 func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
@@ -26,11 +33,17 @@ func (w *WebhookService) HandleWebhook(req domain.TicketRequest) error {
 
 	ticket, err := w.tickets.Get(ctx, req.OwnerId, req.Uri)
 	if err != nil {
-		return errors.Wrap(err, "error from repository")
+		return errors.Wrap(err, "error from ticket repository")
 	}
 
+	if ticket.Id == 0 {
+		return nil
+	}
+
+	req.TicketId = ticket.Id
+
 	if ticket.GitSystem == domain.RepoTypeUnknown {
-		ticket.GitSystem = req.Req.Src
+		ticket.GitSystem = req.RepoType
 	}
 
 	switch ticket.GitSystem {
@@ -47,8 +60,20 @@ func (w *WebhookService) handleGithub(ctx context.Context, req domain.TicketRequ
 		return errors.Wrap(err, "error obtaining rules")
 	}
 
-	_ = rules
+	for _, rule := range rules {
+		if !rule.Fire(req) {
+			return nil
+		}
+	}
 
-	//w.chat.Send()
+	msgs, err := w.msgConstr.Parse(req)
+	if err != nil {
+		return errors.Wrap(err, "error parsing incoming hook payload to message")
+	}
+
+	for _, item := range msgs {
+		w.chat.Send(item)
+	}
+
 	return nil
 }

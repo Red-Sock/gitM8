@@ -3,8 +3,8 @@ package open_ticket
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"strconv"
+	"strings"
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
@@ -70,11 +70,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		out.SendMessage(&response.MessageOut{Text: "Error creating web url of ticket: " + err.Error()})
 		return
 	}
-	webUrl, err = url.JoinPath(h.host, webUrl)
-	if err != nil {
-		out.SendMessage(&response.MessageOut{Text: "Error concatenating web url for ticket: " + err.Error()})
-		return
-	}
+	webUrl = strings.Join([]string{h.host, webUrl}, "/")
 
 	buttons := &keyboard.InlineKeyboard{}
 

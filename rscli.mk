@@ -16,8 +16,7 @@ else
 endif
 
 mig-up:
-
 	@echo "applying migration on postgres"
-	GOOSE_DRIVER=postgres GOOSE_DBSTRING=postgresql://postgres:password@0.0.0.0:5432/postgres goose up
+	GOOSE_DRIVER=postgres GOOSE_DBSTRING=postgresql://postgres:pwd@0.0.0.0:5432/postgres goose -dir ./migrations up
 
 #==============

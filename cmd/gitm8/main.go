@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/Red-Sock/gitm8/cmd/gitm8/bootstrap"
+	"github.com/Red-Sock/gitm8/internal/clients/tg"
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/service/v1"
 )
@@ -30,14 +31,16 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), startupDuration)
 	defer cancel()
 
+	bot := tg.New(cfg)
+
 	logrus.Info("initializing service layer")
-	srv, err := v1.NewService(ctx, cfg)
+	srv, err := v1.NewService(ctx, cfg, bot)
 	if err != nil {
 		logrus.Fatalf("error assembling service layer %s", err)
 	}
 
 	logrus.Info("bootstrapping api")
-	stopFunc, err := bootstrap.ApiEntryPoint(ctx, cfg, srv)
+	stopFunc, err := bootstrap.ApiEntryPoint(ctx, cfg, srv, bot)
 	if err != nil {
 		logrus.Fatalf("error starting api %s", err)
 	}

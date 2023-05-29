@@ -68,7 +68,8 @@ WHERE
 		switch ruleType {
 		case domain.RuleTypeWhitelist:
 			tr = &domain.TicketRuleWhitelist{
-				Id: id,
+				Id:       id,
+				TicketId: ticketId,
 			}
 		}
 
