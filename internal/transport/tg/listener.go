@@ -10,9 +10,9 @@ import (
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/main_menu"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/create_ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/delete_ticket"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket/delete_ticket"
-	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/open_ticket/rename_ticket"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/my_tickets/rename_ticket"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/rules/add_rule"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/rules/delete_rule"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/handlers/rules/edit_rule"
@@ -24,9 +24,9 @@ type Server struct {
 	bot *client.Bot
 }
 
-func New(cfg *config.Config, srvs interfaces.Services) (s *Server) {
+func New(cfg *config.Config, bot *client.Bot, srvs interfaces.Services) (s *Server) {
 	s = &Server{}
-	s.bot = client.NewBot(cfg.GetString(config.ServerTgAPIKey))
+	s.bot = bot
 
 	{
 		s.bot.AddCommandHandler(main_menu.New(srvs))

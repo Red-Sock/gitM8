@@ -1,12 +1,12 @@
 package domain
 
-type Request struct {
-	Src     RepoType
-	Type    EventType
-	Payload []byte
-}
+import (
+	"github.com/pkg/errors"
+)
 
 type EventType int
+
+var ErrUnknownEventType = errors.New("unknown event type")
 
 const (
 	Invalid EventType = iota

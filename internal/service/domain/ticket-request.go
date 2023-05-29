@@ -1,7 +1,9 @@
 package domain
 
 type TicketRequest struct {
-	OwnerId uint64
-	Uri     string
-	Req     Request
+	TicketId uint64
+	OwnerId  uint64
+	Uri      string
+	RepoType RepoType
+	Payload  Payload
 }

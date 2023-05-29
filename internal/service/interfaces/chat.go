@@ -1,5 +1,9 @@
 package interfaces
 
+import (
+	tgapi "github.com/Red-Sock/go_tg/interfaces"
+)
+
 type Chat interface {
-	Send(chatID uint64, message string)
+	Send(out tgapi.MessageOut)
 }

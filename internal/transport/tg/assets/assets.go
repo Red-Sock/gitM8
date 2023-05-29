@@ -12,4 +12,6 @@ const (
 	Trash = "🗑"
 
 	Edit = "✎"
+
+	Push = "⬆"
 )

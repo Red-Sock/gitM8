@@ -3,6 +3,8 @@ package interfaces
 import (
 	"context"
 
+	"github.com/Red-Sock/go_tg/interfaces"
+
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
@@ -30,4 +32,8 @@ type RuleService interface {
 	GetRulesByTicketId(ctx context.Context, ticketId, userId uint64) ([]domain.TicketRule, error)
 	GetRuleById(ctx context.Context, ruleId, userId uint64) (domain.TicketRule, error)
 	DeleteById(ctx context.Context, ruleId, userId uint64) error
+}
+
+type MessageConstructor interface {
+	Parse(request domain.TicketRequest) ([]interfaces.MessageOut, error)
 }

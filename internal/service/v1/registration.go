@@ -15,6 +15,7 @@ import (
 type TicketService struct {
 	tickets dataInterfaces.TicketRepo
 	user    dataInterfaces.UserRepo
+	subs    dataInterfaces.Subscriptions
 	// getHost - is a function that returns current address where webhook will send info
 	getHost func() string
 }
@@ -23,23 +24,38 @@ func NewRegistrationService(repository dataInterfaces.Repository, cfg *config.Co
 	return &TicketService{
 		tickets: repository.Ticket(),
 		user:    repository.User(),
+		subs:    repository.Subscriptions(),
 		getHost: func() string {
 			return cfg.GetString(config.WebhookHostURL)
 		},
 	}
 }
 
-func (r *TicketService) CreateBasicTicket(ctx context.Context, req domain.CreateTicketRequest) (ticket domain.Ticket, err error) {
+func (r *TicketService) CreateBasicTicket(ctx context.Context, req domain.CreateTicketRequest) (domain.Ticket, error) {
 	user, err := r.user.Upsert(ctx, domain.TgUser{
 		TgId: req.OwnerTgId,
 	})
+	if err != nil {
+		return domain.Ticket{}, errors.Wrap(err, "error obtaining user info from repository")
+	}
 
-	ticket.OwnerId = user.TgId
-	ticket.URI = strconv.FormatInt(time.Now().Unix(), 16)
+	ticket := domain.Ticket{
+		OwnerId: user.TgId,
+		URI:     strconv.FormatInt(time.Now().Unix(), 16),
+	}
 
 	ticket, err = r.tickets.Add(ctx, ticket)
 	if err != nil {
 		return ticket, errors.Wrap(err, "error saving ticket")
+	}
+
+	err = r.subs.AddSubscriber(ctx, domain.Subscription{
+		UserId:   user.TgId,
+		ChatId:   req.ChatId,
+		TicketId: ticket.Id,
+	})
+	if err != nil {
+		return ticket, errors.Wrap(err, "error creating subscription")
 	}
 
 	return ticket, nil
@@ -68,5 +84,19 @@ func (r *TicketService) Rename(ctx context.Context, ticketId, userId uint64, new
 }
 
 func (r *TicketService) Delete(ctx context.Context, ticketId, userId uint64) error {
-	return r.tickets.Delete(ctx, ticketId, userId)
+	hasAccess, err := r.tickets.HasAccess(ctx, ticketId, userId)
+	if err != nil {
+		return errors.Wrap(err, "error obtaining information about user's access to ticket")
+	}
+
+	if !hasAccess {
+		return dataInterfaces.ErrTicketUnavailable
+	}
+
+	err = r.tickets.Delete(ctx, ticketId)
+	if err != nil {
+		return errors.Wrap(err, "error deleting ticket from db")
+	}
+
+	return nil
 }

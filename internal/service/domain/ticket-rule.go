@@ -44,7 +44,7 @@ func (rt *TicketRuleWhitelist) Fire(in TicketRequest) bool {
 	}
 
 	for _, wt := range rt.WhiteList {
-		if wt == in.Req.Type {
+		if wt == in.Payload.GetEventType() {
 			return true
 		}
 	}
