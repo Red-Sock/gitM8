@@ -2,29 +2,42 @@ package v1
 
 import (
 	"context"
+	"strconv"
+	"strings"
 
 	"github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model/response"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
 
 	dataInterfaces "github.com/Red-Sock/gitm8/internal/repository/interfaces"
 	"github.com/Red-Sock/gitm8/internal/service/domain"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/assets"
 )
 
+type constructors func(payload domain.Payload) (string, []tgbotapi.MessageEntity, error)
+
 type MessageConstructor struct {
-	subscriptions dataInterfaces.Subscriptions
+	subscriptions           dataInterfaces.Subscriptions
+	eventTypeToConstructors map[domain.EventType]constructors
 }
 
 func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstructor {
-	return &MessageConstructor{
+	m := &MessageConstructor{
 		subscriptions: repository.Subscriptions(),
 	}
+
+	m.eventTypeToConstructors = map[domain.EventType]constructors{
+		domain.Push: m.extractPushMessage,
+	}
+
+	return m
 }
 
 func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.MessageOut, error) {
-	msg, err := m.extractMessage(in.Payload)
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating message for event")
+	construct, ok := m.eventTypeToConstructors[in.Payload.GetEventType()]
+	if !ok {
+		return nil, domain.ErrUnknownEventType
 	}
 
 	subs, err := m.subscriptions.GetSubscribers(context.Background(), in.TicketId)
@@ -32,45 +45,105 @@ func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.Messag
 		return nil, errors.Wrap(err, "error obtaining subscribers from repo")
 	}
 
+	msg, format, err := construct(in.Payload)
+	if err != nil {
+		return nil, err
+	}
+
 	out := make([]interfaces.MessageOut, 0, len(subs))
 
 	for _, sub := range subs {
 		out = append(out, &response.MessageOut{
-			ChatId: int64(sub.ChatId),
-			Text:   msg,
+			ChatId:   int64(sub.ChatId),
+			Text:     msg,
+			Entities: format,
 		})
 	}
 
 	return out, nil
 }
 
-func (m *MessageConstructor) extractMessage(payload domain.Payload) (string, error) {
-	switch payload.GetEventType() {
-	case domain.Push:
-		return payload.GetAuthor().Name + " has pushed to " + payload.GetProject().Name + ".\n" +
-			"Branch " + payload.GetSrcBranch().Name, nil
-	case domain.Ping:
-		// TODO GITM-8
-		return payload.GetProject().Name + " successfully has been pinged!", nil
-	case domain.Comment:
-		// TODO GITM-7
-		return payload.GetAuthor().Name + " left a comment at " + payload.GetPullRequest().Name, nil
-	case domain.PullRequest:
-		// TODO GITM-9
-		return payload.GetAuthor().Name + " created a pull request", nil
-	case domain.Release:
-		// TODO GITM-13
-		return "New version of " + payload.GetProject().Name + " has been released", nil
-	case domain.WorkflowJob:
-		// TODO GITM-15
-		return "Event messaging is still in progress. Await GITM-15 to be done", nil
-	case domain.WorkflowRun:
-		// TODO GITM-16
-		return "Event messaging is still in progress. Await GITM-16 to be done", nil
-	case domain.WorkflowManualStart:
-		// TODO GITM-17
-		return "Event messaging is still in progress. Await GITM-17 to be done", nil
-	default:
-		return "", domain.ErrUnknownEventType
+func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	constr := constructor{}
+
+	constr.Write(assets.Push)
+	{
+		author := payload.GetAuthor()
+		constr.WriteWithLink(author.Name, author.Link)
 	}
+	constr.Write(" has pushed to ")
+
+	{
+		proj := payload.GetProject()
+		constr.WriteWithLink(proj.Name, proj.Link)
+	}
+
+	{
+		srcBranch := payload.GetSrcBranch()
+		constr.Write(" to branch ")
+		constr.WriteWithLink(srcBranch.Name, srcBranch.Link)
+	}
+
+	{
+		commits := payload.GetCommits()
+		constr.Write(" " + strconv.Itoa(len(commits)))
+		if len(commits) == 1 {
+			constr.Write(" commit")
+		} else {
+			constr.Write(" commits")
+		}
+
+	}
+
+	return constr.String(), constr.format, nil
+}
+
+type constructor struct {
+	text      []string
+	format    []tgbotapi.MessageEntity
+	idx       int
+	separator string
+}
+
+func (c *constructor) Write(text string) {
+	c.idx += len([]rune(text))
+	c.text = append(c.text, text)
+}
+
+func (c *constructor) WriteWithFormat(text, format string) {
+	c.format = append(c.format, tgbotapi.MessageEntity{
+		Type:   format,
+		Offset: c.idx,
+		Length: len(text),
+	})
+
+	c.Write(text)
+}
+
+func (c *constructor) WriteWithLink(text, url string) {
+	c.format = append(c.format, tgbotapi.MessageEntity{
+		Type:   response.TextLinkTextFormat,
+		Offset: c.idx,
+		Length: len(text),
+		URL:    url,
+	})
+
+	c.Write(text)
+}
+
+func (c *constructor) WriteWithMention(text string, userID uint64) {
+	c.format = append(c.format, tgbotapi.MessageEntity{
+		Type:   response.MentionTextFormat,
+		Offset: c.idx,
+		Length: len(text),
+		User: &tgbotapi.User{
+			ID: int64(userID),
+		},
+	})
+
+	c.Write(text)
+}
+
+func (c *constructor) String() string {
+	return strings.Join(c.text, c.separator)
 }

@@ -32,21 +32,32 @@ func (p *PushPayload) GetEventType() domain.EventType {
 func (p *PushPayload) GetProject() domain.Project {
 	return domain.Project{
 		Name: p.Repository.FullName,
+		Link: p.Repository.HtmlUrl,
 	}
 }
 
 func (p *PushPayload) GetAuthor() domain.Author {
-	return domain.Author{
-		Name: p.Pusher.Name,
-	}
+	return p.Sender.ToDomain()
 }
 
 func (p *PushPayload) GetSrcBranch() domain.Branch {
+	branchName := strings.TrimLeft(p.Ref, refPrefix)
 	return domain.Branch{
-		Name: strings.TrimLeft(p.Ref, refPrefix),
+		Name: branchName,
+		Link: p.Repository.HtmlUrl + "/tree/" + branchName,
 	}
 }
 
 func (p *PushPayload) GetPullRequest() domain.PullRequestPayload {
 	return domain.PullRequestPayload{}
+}
+
+func (p *PushPayload) GetCommits() []domain.Commit {
+	out := make([]domain.Commit, 0, len(p.Commits))
+	for _, item := range p.Commits {
+		out = append(out, domain.Commit{
+			Author: item.Author.ToDomain(),
+		})
+	}
+	return out
 }

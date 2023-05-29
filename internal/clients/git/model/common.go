@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"time"
+
+	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
 type Base struct {
@@ -35,10 +37,24 @@ type User struct {
 	SiteAdmin         bool   `json:"site_admin"`
 }
 
+func (u *User) ToDomain() domain.Author {
+	return domain.Author{
+		Name: u.Login,
+		Link: u.HtmlUrl,
+	}
+}
+
 type UserShort struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
+}
+
+func (u *UserShort) ToDomain() domain.Author {
+	return domain.Author{
+		Name: u.Username,
+		Link: "https://github.com/" + u.Username,
+	}
 }
 
 type Organization struct {

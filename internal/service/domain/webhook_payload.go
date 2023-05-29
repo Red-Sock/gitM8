@@ -11,20 +11,29 @@ type Payload interface {
 	GetSrcBranch() Branch
 	// GetPullRequest - obtain pull request information
 	GetPullRequest() PullRequestPayload
+	// GetCommits - returns commits
+	GetCommits() []Commit
 }
 
 type Project struct {
 	Name string
+	Link string
 }
 
 type Author struct {
 	Name string
+	Link string
 }
 
 type Branch struct {
 	Name string
+	Link string
 }
 
 type PullRequestPayload struct {
 	Name string
+}
+
+type Commit struct {
+	Author Author
 }
