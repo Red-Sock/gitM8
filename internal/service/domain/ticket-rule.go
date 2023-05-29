@@ -27,39 +27,50 @@ type TicketRule interface {
 	GetId() uint64
 	GetTicketId() uint64
 	GetType() RuleType
+	String() string
 	Fire(in TicketRequest) (ok bool)
 }
 
-// RestrictingTicket - whitelist for webhook types for ticket
-type RestrictingTicket struct {
-	Id        uint64
-	TicketId  uint64
-	WhiteList []EventType
+// TicketRuleWhitelist - whitelist for webhook types for ticket
+type TicketRuleWhitelist struct {
+	Id        uint64      `json:"-"`
+	TicketId  uint64      `json:"-"`
+	WhiteList []EventType `json:"white_list"`
 }
 
-func (rt *RestrictingTicket) Fire(in TicketRequest) bool {
+func (rt *TicketRuleWhitelist) Fire(in TicketRequest) bool {
 	if len(rt.WhiteList) == 0 {
 		return true
 	}
 
 	for _, wt := range rt.WhiteList {
-		if wt == in.Req.Type {
+		if wt == in.Payload.GetEventType() {
 			return true
 		}
 	}
 
 	return false
 }
-func (rt *RestrictingTicket) GetId() uint64 {
+func (rt *TicketRuleWhitelist) GetId() uint64 {
 	return rt.Id
 }
 
-func (rt *RestrictingTicket) GetType() RuleType {
+func (rt *TicketRuleWhitelist) GetType() RuleType {
 	return RuleTypeWhitelist
 }
 
-func (rt *RestrictingTicket) GetTicketId() uint64 {
+func (rt *TicketRuleWhitelist) GetTicketId() uint64 {
 	return rt.TicketId
+}
+
+func (rt *TicketRuleWhitelist) String() string {
+	out := "Whitelist on events\n"
+
+	for _, item := range rt.WhiteList {
+		out += item.String() + "\n"
+	}
+
+	return out
 }
 
 // TODO rules for more specific restrictions

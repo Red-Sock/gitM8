@@ -3,6 +3,8 @@ package interfaces
 import (
 	"context"
 
+	"github.com/Red-Sock/go_tg/interfaces"
+
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
@@ -26,5 +28,12 @@ type WebhookService interface {
 
 type RuleService interface {
 	AddRules(ctx context.Context, rules ...domain.TicketRule) error
-	GetRules(ctx context.Context, ticketId uint64) ([]domain.TicketRule, error)
+	UpdateRule(ctx context.Context, rule domain.TicketRule, userId uint64) error
+	GetRulesByTicketId(ctx context.Context, ticketId, userId uint64) ([]domain.TicketRule, error)
+	GetRuleById(ctx context.Context, ruleId, userId uint64) (domain.TicketRule, error)
+	DeleteById(ctx context.Context, ruleId, userId uint64) error
+}
+
+type MessageConstructor interface {
+	Parse(request domain.TicketRequest) ([]interfaces.MessageOut, error)
 }

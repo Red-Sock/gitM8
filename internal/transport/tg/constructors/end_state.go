@@ -19,3 +19,15 @@ func GetEndState(name string) interfaces.MessageOut {
 		Keys: buttons,
 	}
 }
+
+func GetEndStateEditMsg(name string, messageId uint64) interfaces.MessageOut {
+	buttons := &keyboard.InlineKeyboard{}
+	buttons.AddButton(assets.Back+"Return to main menu", commands.MainMenu)
+	buttons.AddButton(assets.Back+"Return to tickets list", commands.OpenMyTicketsList)
+
+	return &response.EditMessage{
+		Text:      name,
+		Keys:      buttons,
+		MessageId: int64(messageId),
+	}
+}

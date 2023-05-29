@@ -11,9 +11,10 @@ import (
 )
 
 type Repository struct {
-	user   interfaces.UserRepo
-	ticket interfaces.TicketRepo
-	rule   interfaces.RulesRepo
+	user          interfaces.UserRepo
+	ticket        interfaces.TicketRepo
+	rule          interfaces.RulesRepo
+	subscriptions interfaces.Subscriptions
 }
 
 func NewRepository(ctx context.Context, cfg *config.Config) (*Repository, error) {
@@ -23,9 +24,10 @@ func NewRepository(ctx context.Context, cfg *config.Config) (*Repository, error)
 	}
 
 	return &Repository{
-		user:   NewTgUserRepo(pgConn),
-		ticket: NewTicketRepo(pgConn),
-		rule:   NewTicketRuleRepo(pgConn),
+		user:          NewTgUserRepo(pgConn),
+		ticket:        NewTicketRepo(pgConn),
+		rule:          NewTicketRuleRepo(pgConn),
+		subscriptions: NewSubscriptionsRepo(pgConn),
 	}, nil
 }
 
@@ -39,4 +41,8 @@ func (r *Repository) Ticket() interfaces.TicketRepo {
 
 func (r *Repository) Rule() interfaces.RulesRepo {
 	return r.rule
+}
+
+func (r *Repository) Subscriptions() interfaces.Subscriptions {
+	return r.subscriptions
 }

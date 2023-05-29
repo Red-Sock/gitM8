@@ -10,6 +10,7 @@ import (
 
 	serviceInterfaces "github.com/Red-Sock/gitm8/internal/service/interfaces"
 	"github.com/Red-Sock/gitm8/internal/transport/tg/commands"
+	"github.com/Red-Sock/gitm8/internal/transport/tg/constructors"
 )
 
 type Handler struct {
@@ -33,9 +34,8 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 
 	tickets, err := h.tickets.GetByUser(context.Background(), uint64(in.From.ID))
 	if err != nil {
-		out.SendMessage(&response.MessageOut{
-			Text: "error obtaining tickets from database: " + err.Error(),
-		})
+		out.SendMessage(constructors.GetEndState("error obtaining tickets from database: " + err.Error()))
+		return
 	}
 
 	if len(tickets) > 0 {

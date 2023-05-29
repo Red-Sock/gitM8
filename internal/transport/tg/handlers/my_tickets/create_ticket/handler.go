@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
@@ -18,24 +19,26 @@ import (
 
 type Handler struct {
 	ticketServices serviceInterfaces.TicketsService
+	host           string
 }
 
 func (h *Handler) GetCommand() string {
 	return commands.CreateTicket
 }
 
-func New(srv serviceInterfaces.Services) *Handler {
+func New(srv serviceInterfaces.Services, host string) *Handler {
 	return &Handler{
 		ticketServices: srv.TicketsService(),
+		host:           host,
 	}
 }
 
 func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 	resp, err := h.ticketServices.CreateBasicTicket(context.Background(), domain.CreateTicketRequest{
 		OwnerTgId: uint64(in.From.ID),
+		ChatId:    uint64(in.Chat.ID),
 	})
 	if err != nil {
-		logrus.Errorf("error creating basic ticket: %s", err)
 		out.SendMessage(response.NewMessage("something went wrong: " + err.Error()))
 		return
 	}
@@ -50,6 +53,9 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		ChatId:    in.Chat.ID,
 		MessageId: int64(in.MessageID),
 	})
+
+	webUrl = strings.Join([]string{h.host, webUrl}, "/")
+
 	out.SendMessage(constructors.GetEndState(fmt.Sprintf("Insert this url as webhook for project: " + webUrl + "\nTicket id is: " + strconv.FormatUint(resp.Id, 10))))
 }
 

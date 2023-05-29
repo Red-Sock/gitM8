@@ -17,6 +17,7 @@ type Repository interface {
 	User() UserRepo
 	Ticket() TicketRepo
 	Rule() RulesRepo
+	Subscriptions() Subscriptions
 }
 
 type UserRepo interface {
@@ -34,10 +35,19 @@ type TicketRepo interface {
 	GetById(ctx context.Context, ownerId, id uint64) (domain.Ticket, error)
 	GetByUser(ctx context.Context, userID uint64) ([]domain.Ticket, error)
 	Rename(ctx context.Context, ownerId, id uint64, newName string) error
-	Delete(ctx context.Context, ownerId, id uint64) error
+	Delete(ctx context.Context, id uint64) error
+	HasAccess(ctx context.Context, ticketId, userId uint64) (bool, error)
 }
 
 type RulesRepo interface {
-	Add(ctx context.Context, rule ...domain.TicketRule) error
-	Get(ctx context.Context, ticketId uint64) ([]domain.TicketRule, error)
+	AddRules(ctx context.Context, rule ...domain.TicketRule) error
+	UpdateRule(ctx context.Context, rule domain.TicketRule) error
+	GetByTicketId(ctx context.Context, ticketId, userId uint64) ([]domain.TicketRule, error)
+	GetById(ctx context.Context, ruleId, userId uint64) (domain.TicketRule, error)
+	DeleteById(ctx context.Context, ruleId, userId uint64) error
+}
+
+type Subscriptions interface {
+	AddSubscriber(ctx context.Context, subscription domain.Subscription) error
+	GetSubscribers(ctx context.Context, ticketId uint64) ([]domain.Subscription, error)
 }

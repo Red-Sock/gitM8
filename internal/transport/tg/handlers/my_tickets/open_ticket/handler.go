@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	tgapi "github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model"
@@ -28,16 +29,19 @@ OwnerId: %d
 type Handler struct {
 	tickets interfaces.TicketsService
 	rules   interfaces.RuleService
+
+	host string
 }
 
 func (h *Handler) GetCommand() string {
 	return commands.OpenTicketInfo
 }
 
-func New(servs interfaces.Services) *Handler {
+func New(servs interfaces.Services, host string) *Handler {
 	return &Handler{
 		tickets: servs.TicketsService(),
 		rules:   servs.RuleService(),
+		host:    host,
 	}
 }
 
@@ -61,27 +65,27 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		return
 	}
 
-	url, err := ticket.GetWebUrl()
+	webUrl, err := ticket.GetWebUrl()
 	if err != nil {
 		out.SendMessage(&response.MessageOut{Text: "Error creating web url of ticket: " + err.Error()})
 		return
 	}
+	webUrl = strings.Join([]string{h.host, webUrl}, "/")
 
 	buttons := &keyboard.InlineKeyboard{}
 
 	strId := strconv.FormatUint(ticket.Id, 10)
 	buttons.AddButton("✍️Rename", commands.RenameTicket+" "+strId)
 
-	rules, err := h.rules.GetRules(ctx, ticket.Id)
+	rules, err := h.rules.GetRulesByTicketId(ctx, ticket.Id, uint64(in.From.ID))
 	if err != nil {
 		out.SendMessage(&response.MessageOut{Text: "Error obtaining rules from db: " + err.Error()})
 		return
 	}
 	if len(rules) != 0 {
 		buttons.AddButton("📔Rules", commands.OpenRulesList+" "+strId)
-	} else {
-		buttons.AddButton("📝Add rule", commands.AddRule+" "+strId)
 	}
+	buttons.AddButton("📝Add rule", commands.AddRule+" "+strId)
 
 	buttons.AddButton("🗑️Delete", commands.DeleteTicket+" "+strId)
 
@@ -95,7 +99,7 @@ func (h *Handler) Handle(in *model.MessageIn, out tgapi.Chat) {
 		Text: fmt.Sprintf(ticketInfoPattern,
 			ticket.Name,
 			ticket.Id,
-			url,
+			webUrl,
 			ticket.GitSystem.String(),
 			ticket.OwnerId,
 		),

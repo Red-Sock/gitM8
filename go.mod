@@ -3,7 +3,8 @@ module github.com/Red-Sock/gitm8
 go 1.20
 
 require (
-	github.com/Red-Sock/go_tg v0.0.13
+	github.com/Red-Sock/go_tg v0.0.16
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/google/go-github/v50 v50.2.1-0.20230401171619-b1c53f808b22
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/pkg/errors v0.9.1
@@ -17,7 +18,6 @@ require (
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230417170513-8ee5748c52b5 // indirect
 	github.com/cloudflare/circl v1.3.2 // indirect
-	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

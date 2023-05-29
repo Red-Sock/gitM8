@@ -9,21 +9,25 @@ import (
 )
 
 type Service struct {
-	regSrv     interfaces.TicketsService
-	ruleSrv    interfaces.RuleService
-	webhookSrv interfaces.WebhookService
+	regSrv               interfaces.TicketsService
+	ruleSrv              interfaces.RuleService
+	webhookSrv           interfaces.WebhookService
+	messagingConstructor interfaces.MessageConstructor
 }
 
-func NewService(ctx context.Context, cfg *config.Config) (*Service, error) {
+func NewService(ctx context.Context, cfg *config.Config, chat interfaces.Chat) (*Service, error) {
 	pgRepo, err := pg.NewRepository(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}
 
+	messagingConstructor := NewMessageConstructor(pgRepo)
+
 	return &Service{
-		regSrv:     NewRegistrationService(pgRepo, cfg),
-		webhookSrv: NewWebhookService(),
-		ruleSrv:    NewRuleService(pgRepo),
+		regSrv:               NewRegistrationService(pgRepo, cfg),
+		webhookSrv:           NewWebhookService(pgRepo, messagingConstructor, chat),
+		ruleSrv:              NewRuleService(pgRepo),
+		messagingConstructor: messagingConstructor,
 	}, nil
 }
 
