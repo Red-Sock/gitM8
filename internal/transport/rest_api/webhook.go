@@ -37,7 +37,6 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	switch {
 	case req.Header.Get(githubHeader) != "":
 		var eventType domain.EventType

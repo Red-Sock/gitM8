@@ -114,8 +114,8 @@ type PullRequestCodeComment struct {
 		ReviewCommentUrl   string        `json:"review_comment_url"`
 		CommentsUrl        string        `json:"comments_url"`
 		StatusesUrl        string        `json:"statuses_url"`
-		Head               Base          `json:"head"`
-		Base               Base          `json:"base"`
+		Head               Branch        `json:"head"`
+		Base               Branch        `json:"base"`
 		Links              Link          `json:"_links"`
 		AuthorAssociation  string        `json:"author_association"`
 		AutoMerge          interface{}   `json:"auto_merge"`
