@@ -13,6 +13,7 @@ const (
 
 	Edit = "✎"
 
-	Push = "⬆"
-	Ping = "🏓"
+	Push        = "⬆"
+	Ping        = "🏓"
+	PullRequest = "🔀"
 )

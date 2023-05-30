@@ -56,6 +56,10 @@ func (p *PingPayload) GetCommits() []domain.Commit {
 	return nil
 }
 
+func (p *PingPayload) GetCommitsAmount() int {
+	return 0
+}
+
 func (p *PingPayload) GetEventType() domain.EventType {
 	return domain.Ping
 }

@@ -20,8 +20,7 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 		// TODO GITM-7
 		return nil, domain.ErrUnknownEventType
 	case domain.PullRequest:
-		// TODO GITM-9
-		return nil, domain.ErrUnknownEventType
+		out = &PullRequestPayload{}
 	case domain.Release:
 		// TODO GITM-13
 		return nil, domain.ErrUnknownEventType

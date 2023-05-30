@@ -3,17 +3,26 @@ package model
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
 
-type Base struct {
+type Branch struct {
 	Label string `json:"label"`
 	Ref   string `json:"ref"`
 	Sha   string `json:"sha"`
 	User  User   `json:"user"`
 	Repo  Repo
+}
+
+func (b *Branch) ToDomain(projectNameLink string) domain.Branch {
+	branchName := strings.Replace(b.Ref, refPrefix, "", 1)
+	return domain.Branch{
+		Name: branchName,
+		Link: projectNameLink + "/tree/" + branchName,
+	}
 }
 
 type User struct {
