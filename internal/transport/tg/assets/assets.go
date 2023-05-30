@@ -16,4 +16,6 @@ const (
 	Push        = "⬆"
 	Ping        = "🏓"
 	PullRequest = "🔀"
+
+	Comment = "💬"
 )

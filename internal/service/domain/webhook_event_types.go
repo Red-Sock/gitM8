@@ -16,6 +16,7 @@ const (
 	Ping
 	// Comment - comment in pr(not connected to code, connected to code and review (summary of comments to code))
 	Comment
+
 	// PullRequest - pr connected action
 	PullRequest
 
@@ -61,7 +62,6 @@ var githubEventsToDomain = map[string]EventType{
 	"pull_request":                PullRequest,
 	"issue_comment":               Comment,
 	"pull_request_review_comment": Comment,
-	"pull_request_review":         Comment,
 
 	"release": Release,
 

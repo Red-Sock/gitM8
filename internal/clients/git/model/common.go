@@ -228,3 +228,31 @@ func (t *Time) UnmarshalJSON(in []byte) error {
 
 	return err
 }
+
+type Comment struct {
+	Url                   string      `json:"url"`
+	HtmlUrl               string      `json:"html_url"`
+	IssueUrl              string      `json:"issue_url"`
+	Id                    int         `json:"id"`
+	NodeId                string      `json:"node_id"`
+	User                  User        `json:"user"`
+	CreatedAt             time.Time   `json:"created_at"`
+	UpdatedAt             time.Time   `json:"updated_at"`
+	AuthorAssociation     string      `json:"author_association"`
+	Body                  string      `json:"body"`
+	Reactions             Reaction    `json:"reactions"`
+	PerformedViaGithubApp interface{} `json:"performed_via_github_app"`
+}
+
+type Reaction struct {
+	Url        string `json:"url"`
+	TotalCount int    `json:"total_count"`
+	Field3     int    `json:"+1"`
+	Field4     int    `json:"-1"`
+	Laugh      int    `json:"laugh"`
+	Hooray     int    `json:"hooray"`
+	Confused   int    `json:"confused"`
+	Heart      int    `json:"heart"`
+	Rocket     int    `json:"rocket"`
+	Eyes       int    `json:"eyes"`
+}
