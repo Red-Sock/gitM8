@@ -26,7 +26,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 
 	ticket.OwnerId, ticket.Uri, err = extractWebhookPath(req.URL.Path)
 	if err != nil {
-		logrus.Error(err)
+		logrus.Errorf("error extracting webhook path from url: %s", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -46,7 +46,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		wh, err := ghmodel.SelectModel(eventType, payload)
 		if err != nil {
 			logrus.Errorf("error selecting proper webhook model: %s", err)
-			rw.WriteHeader(http.StatusInternalServerError)
+			rw.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
@@ -54,7 +54,7 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		ticket.RepoType = domain.RepoTypeGithub
 	default:
 		logrus.Errorf("error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
-		rw.WriteHeader(http.StatusInternalServerError)
+		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

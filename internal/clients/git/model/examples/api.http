@@ -1,6 +1,16 @@
 ### Push event test
-http://0.0.0.0:8080/743523416/6473b085
+{{local}}/
 Content-Type: application/json
 X-GitHub-Event: push
 
 < push.json
+
+
+### Ping event test
+{{master}}/
+Content-Type: application/json
+X-GitHub-Event: ping
+
+< ping.json
+
+
