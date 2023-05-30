@@ -14,4 +14,5 @@ const (
 	Edit = "✎"
 
 	Push = "⬆"
+	Ping = "🏓"
 )

@@ -30,10 +30,7 @@ func (p *PushPayload) GetEventType() domain.EventType {
 }
 
 func (p *PushPayload) GetProject() domain.Project {
-	return domain.Project{
-		Name: p.Repository.FullName,
-		Link: p.Repository.HtmlUrl,
-	}
+	return p.Repository.ToDomain()
 }
 
 func (p *PushPayload) GetAuthor() domain.Author {
@@ -41,7 +38,7 @@ func (p *PushPayload) GetAuthor() domain.Author {
 }
 
 func (p *PushPayload) GetSrcBranch() domain.Branch {
-	branchName := strings.TrimLeft(p.Ref, refPrefix)
+	branchName := strings.Replace(p.Ref, refPrefix, "", 1)
 	return domain.Branch{
 		Name: branchName,
 		Link: p.Repository.HtmlUrl + "/tree/" + branchName,

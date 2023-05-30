@@ -15,19 +15,25 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 	case domain.Push:
 		out = &PushPayload{}
 	case domain.Ping:
-		// TODO GITM-8
+		out = &PingPayload{}
 	case domain.Comment:
 		// TODO GITM-7
+		return nil, domain.ErrUnknownEventType
 	case domain.PullRequest:
 		// TODO GITM-9
+		return nil, domain.ErrUnknownEventType
 	case domain.Release:
 		// TODO GITM-13
+		return nil, domain.ErrUnknownEventType
 	case domain.WorkflowJob:
 		// TODO GITM-15
+		return nil, domain.ErrUnknownEventType
 	case domain.WorkflowRun:
 		// TODO GITM-16
+		return nil, domain.ErrUnknownEventType
 	case domain.WorkflowManualStart:
 		// TODO GITM-17
+		return nil, domain.ErrUnknownEventType
 	default:
 		return nil, domain.ErrUnknownEventType
 	}

@@ -1,6 +1,0 @@
-### simple ping
-POST http://0.0.0.0:8080/webhooks
-Content-Type: application/json
-X-GitHub-Event: push
-
-{"12": 12}

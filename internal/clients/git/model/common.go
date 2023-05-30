@@ -165,6 +165,13 @@ type Repo struct {
 	MergeCommitTitle          string        `json:"merge_commit_title"`
 }
 
+func (r *Repo) ToDomain() domain.Project {
+	return domain.Project{
+		Name: r.FullName,
+		Link: r.HtmlUrl,
+	}
+}
+
 type Link struct {
 	Href string `json:"href"`
 }
