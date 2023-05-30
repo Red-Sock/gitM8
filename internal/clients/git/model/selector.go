@@ -22,7 +22,7 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 		if parsed.Get("issue").Exists() {
 			out = &PullRequestComment{}
 		} else {
-
+			out = &PullRequestCodeComment{}
 		}
 	case domain.PullRequest:
 		out = &PullRequestPayload{}
