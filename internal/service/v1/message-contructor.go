@@ -29,6 +29,7 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 
 	m.eventTypeToConstructors = map[domain.EventType]constructors{
 		domain.Push: m.extractPushMessage,
+		domain.Ping: m.extractPingMessage,
 	}
 
 	return m
@@ -94,6 +95,23 @@ func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string,
 		}
 
 	}
+
+	return constr.String(), constr.format, nil
+}
+
+func (m *MessageConstructor) extractPingMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	constr := constructor{}
+
+	constr.Write("Repository ")
+	{
+		proj := payload.GetProject()
+		constr.WriteWithLink(proj.Name, proj.Link)
+	}
+	constr.Write(" has pinged this webhook!\n")
+	constr.Write("Sending a pong right away")
+	// for some reason assets.Ping causes constructor to mess with index of format
+	// for example, assets.Ping putted before link, causes link to shift one symbol left
+	constr.Write(assets.Ping)
 
 	return constr.String(), constr.format, nil
 }

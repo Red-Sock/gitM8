@@ -15,7 +15,7 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 	case domain.Push:
 		out = &PushPayload{}
 	case domain.Ping:
-		// TODO GITM-8
+		out = &PingPayload{}
 	case domain.Comment:
 		// TODO GITM-7
 	case domain.PullRequest:
