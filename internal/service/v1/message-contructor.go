@@ -3,7 +3,6 @@ package v1
 import (
 	"context"
 	"strconv"
-	"strings"
 
 	"github.com/Red-Sock/go_tg/interfaces"
 	"github.com/Red-Sock/go_tg/model/response"
@@ -28,8 +27,9 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 	}
 
 	m.eventTypeToConstructors = map[domain.EventType]constructors{
-		domain.Push: m.extractPushMessage,
-		domain.Ping: m.extractPingMessage,
+		domain.Ping:        m.extractPingMessage,
+		domain.Push:        m.extractPushMessage,
+		domain.PullRequest: m.extractPullRequest,
 	}
 
 	return m
@@ -64,6 +64,23 @@ func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.Messag
 	return out, nil
 }
 
+func (m *MessageConstructor) extractPingMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	constr := constructor{}
+
+	constr.Write("Repository ")
+	{
+		proj := payload.GetProject()
+		constr.WriteWithLink(proj.Name, proj.Link)
+	}
+	constr.Write(" has pinged this webhook!\n")
+	constr.Write("Sending a pong right away")
+	// for some reason assets.Ping causes constructor to mess with index of format
+	// for example, assets.Ping putted before link, causes link to shift one symbol left
+	constr.Write(assets.Ping)
+
+	return constr.String(), constr.format, nil
+}
+
 func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
 	constr := constructor{}
 
@@ -88,7 +105,7 @@ func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string,
 	{
 		commits := payload.GetCommits()
 		constr.Write(" " + strconv.Itoa(len(commits)))
-		if len(commits) == 1 {
+		if len(commits)%10 == 1 {
 			constr.Write(" commit")
 		} else {
 			constr.Write(" commits")
@@ -99,69 +116,35 @@ func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string,
 	return constr.String(), constr.format, nil
 }
 
-func (m *MessageConstructor) extractPingMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+func (m *MessageConstructor) extractPullRequest(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
 	constr := constructor{}
 
-	constr.Write("Repository ")
+	constr.Write(assets.PullRequest + " ")
 	{
-		proj := payload.GetProject()
-		constr.WriteWithLink(proj.Name, proj.Link)
+		author := payload.GetAuthor()
+		constr.WriteWithLink(author.Name, author.Link)
 	}
-	constr.Write(" has pinged this webhook!\n")
-	constr.Write("Sending a pong right away")
-	// for some reason assets.Ping causes constructor to mess with index of format
-	// for example, assets.Ping putted before link, causes link to shift one symbol left
-	constr.Write(assets.Ping)
+	{
+		pr := payload.GetPullRequest()
+
+		switch pr.GetState() {
+		case domain.PullRequestStateOpened:
+			constr.Write(" has opened a pull request ")
+			constr.WriteWithLink("\""+pr.Name+"\"", pr.Link)
+		default:
+			constr.Write(" has performed something connected to pull request. And we don't know what it is: " + pr.StateStr)
+			return constr.String(), constr.format, nil
+		}
+
+		commitsAmount := payload.GetCommitsAmount()
+		constr.Write(" with " + strconv.Itoa(commitsAmount))
+		if commitsAmount%10 == 1 {
+			constr.Write(" commit")
+		} else {
+			constr.Write(" commits")
+		}
+
+	}
 
 	return constr.String(), constr.format, nil
-}
-
-type constructor struct {
-	text      []string
-	format    []tgbotapi.MessageEntity
-	idx       int
-	separator string
-}
-
-func (c *constructor) Write(text string) {
-	c.idx += len([]rune(text))
-	c.text = append(c.text, text)
-}
-
-func (c *constructor) WriteWithFormat(text, format string) {
-	c.format = append(c.format, tgbotapi.MessageEntity{
-		Type:   format,
-		Offset: c.idx,
-		Length: len(text),
-	})
-
-	c.Write(text)
-}
-
-func (c *constructor) WriteWithLink(text, url string) {
-	c.format = append(c.format, tgbotapi.MessageEntity{
-		Type:   response.TextLinkTextFormat,
-		Offset: c.idx,
-		Length: len(text),
-		URL:    url,
-	})
-
-	c.Write(text)
-}
-
-func (c *constructor) WriteWithMention(text string, userID uint64) {
-	c.format = append(c.format, tgbotapi.MessageEntity{
-		Type:   response.MentionTextFormat,
-		Offset: c.idx,
-		Length: len(text),
-		User: &tgbotapi.User{
-			ID: int64(userID),
-		},
-	})
-
-	c.Write(text)
-}
-
-func (c *constructor) String() string {
-	return strings.Join(c.text, c.separator)
 }

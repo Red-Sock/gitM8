@@ -1,16 +1,23 @@
-### Push event test
+### Ping
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: ping
+
+< ping.json
+
+### Push
 {{local}}/
 Content-Type: application/json
 X-GitHub-Event: push
 
 < push.json
 
-
-### Ping event test
-{{master}}/
+### Open pull request
+{{local}}/
 Content-Type: application/json
-X-GitHub-Event: ping
+X-GitHub-Event: pull_request
 
-< ping.json
+< pr-open.json
+
 
 
