@@ -30,6 +30,7 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 		domain.Ping:        m.extractPingMessage,
 		domain.Push:        m.extractPushMessage,
 		domain.PullRequest: m.extractPullRequest,
+		domain.Comment:     m.extractPullRequestComment,
 	}
 
 	return m
@@ -144,6 +145,24 @@ func (m *MessageConstructor) extractPullRequest(payload domain.Payload) (string,
 			constr.Write(" commits")
 		}
 
+	}
+
+	return constr.String(), constr.format, nil
+}
+
+func (m *MessageConstructor) extractPullRequestComment(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	constr := constructor{}
+
+	constr.Write(assets.Comment)
+	{
+		author := payload.GetAuthor()
+		constr.WriteWithLink(author.Name, author.Link)
+	}
+	constr.Write(" has commented on pull request ")
+	{
+		pr := payload.GetPullRequest()
+
+		constr.WriteWithLink(pr.Name, pr.Link)
 	}
 
 	return constr.String(), constr.format, nil

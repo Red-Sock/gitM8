@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/pkg/errors"
+	"github.com/tidwall/gjson"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
@@ -17,8 +18,12 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 	case domain.Ping:
 		out = &PingPayload{}
 	case domain.Comment:
-		// TODO GITM-7
-		return nil, domain.ErrUnknownEventType
+		parsed := gjson.ParseBytes(payload)
+		if parsed.Get("issue").Exists() {
+			out = &PullRequestComment{}
+		} else {
+
+		}
 	case domain.PullRequest:
 		out = &PullRequestPayload{}
 	case domain.Release:

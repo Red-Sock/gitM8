@@ -19,5 +19,10 @@ X-GitHub-Event: pull_request
 
 < pr-open.json
 
+### Comment on pull request
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: issue_comment
 
+< issue-comment.json
 
