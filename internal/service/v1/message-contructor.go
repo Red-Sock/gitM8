@@ -36,13 +36,13 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 	return m
 }
 
-func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.MessageOut, error) {
+func (m *MessageConstructor) Parse(ctx context.Context, in domain.TicketRequest) ([]interfaces.MessageOut, error) {
 	construct, ok := m.eventTypeToConstructors[in.Payload.GetEventType()]
 	if !ok {
 		return nil, domain.ErrUnknownEventType
 	}
 
-	subs, err := m.subscriptions.GetSubscribers(context.Background(), in.TicketId)
+	subs, err := m.subscriptions.GetSubscribers(ctx, in.TicketId)
 	if err != nil {
 		return nil, errors.Wrap(err, "error obtaining subscribers from repo")
 	}

@@ -66,13 +66,13 @@ func (w *WebhookService) handleGithub(ctx context.Context, req domain.TicketRequ
 		}
 	}
 
-	msgs, err := w.msgConstr.Parse(req)
+	msgs, err := w.msgConstr.Parse(ctx, req)
 	if err != nil {
 		return errors.Wrap(err, "error parsing incoming hook payload to message")
 	}
 
 	for _, item := range msgs {
-		w.chat.Send(item)
+		go w.chat.Send(item)
 	}
 
 	return nil
