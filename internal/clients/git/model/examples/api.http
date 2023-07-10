@@ -29,6 +29,6 @@ X-GitHub-Event: issue_comment
 ### Comment on pull request with code link
 {{local}}/
 Content-Type: application/json
-X-GitHub-Event: issue_comment
+X-GitHub-Event: pull_request_review
 
 < pr-comment.json

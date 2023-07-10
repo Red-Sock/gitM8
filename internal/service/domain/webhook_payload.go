@@ -3,6 +3,7 @@ package domain
 type Payload interface {
 	GetEventType() EventType
 
+	GetAction() Action
 	// GetProject - obtain project in which event has happened
 	GetProject() Project
 	// GetAuthor - obtain user who caused action
@@ -57,3 +58,11 @@ func (p *PullRequestPayload) GetState() PullRequestState {
 type Commit struct {
 	Author Author
 }
+
+type Action string
+
+const (
+	ActionUnknown   = "unknown"
+	ActionSubmitted = "submitted"
+	ActionCreated   = "created"
+)

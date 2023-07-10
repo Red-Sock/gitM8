@@ -25,6 +25,10 @@ type PushPayload struct {
 	HeadCommit   Commit       `json:"head_commit"`
 }
 
+func (p *PushPayload) GetAction() domain.Action {
+	return domain.ActionUnknown
+}
+
 func (p *PushPayload) GetCommitsAmount() int {
 	return len(p.Commits)
 }

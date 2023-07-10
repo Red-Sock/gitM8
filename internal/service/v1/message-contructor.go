@@ -27,10 +27,11 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 	}
 
 	m.eventTypeToConstructors = map[domain.EventType]constructors{
-		domain.Ping:        m.extractPingMessage,
-		domain.Push:        m.extractPushMessage,
-		domain.PullRequest: m.extractPullRequest,
-		domain.Comment:     m.extractPullRequestComment,
+		domain.Ping:          m.extractPingMessage,
+		domain.Push:          m.extractPushMessage,
+		domain.PullRequest:   m.extractPullRequest,
+		domain.ReviewComment: m.extractPullRequestReview,
+		domain.IssueComment:  m.extractIssueComment,
 	}
 
 	return m
@@ -50,6 +51,10 @@ func (m *MessageConstructor) Parse(ctx context.Context, in domain.TicketRequest)
 	msg, format, err := construct(in.Payload)
 	if err != nil {
 		return nil, err
+	}
+
+	if msg == "" {
+		return nil, nil
 	}
 
 	out := make([]interfaces.MessageOut, 0, len(subs))
@@ -150,7 +155,33 @@ func (m *MessageConstructor) extractPullRequest(payload domain.Payload) (string,
 	return constr.String(), constr.format, nil
 }
 
-func (m *MessageConstructor) extractPullRequestComment(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+func (m *MessageConstructor) extractPullRequestReview(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	if payload.GetAction() != domain.ActionSubmitted {
+		return "", nil, nil
+	}
+
+	constr := constructor{}
+
+	constr.Write(assets.Review)
+	{
+		author := payload.GetAuthor()
+		constr.WriteWithLink(author.Name, author.Link)
+	}
+	constr.Write(" has reviewed pull request ")
+	{
+		pr := payload.GetPullRequest()
+
+		constr.WriteWithLink(pr.Name, pr.Link)
+	}
+
+	return constr.String(), constr.format, nil
+}
+
+func (m *MessageConstructor) extractIssueComment(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	if payload.GetAction() != domain.ActionCreated {
+		return "", nil, nil
+	}
+
 	constr := constructor{}
 
 	constr.Write(assets.Comment)
@@ -166,4 +197,5 @@ func (m *MessageConstructor) extractPullRequestComment(payload domain.Payload) (
 	}
 
 	return constr.String(), constr.format, nil
+
 }

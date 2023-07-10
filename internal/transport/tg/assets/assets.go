@@ -18,4 +18,5 @@ const (
 	PullRequest = "🔀"
 
 	Comment = "💬"
+	Review  = "🔍"
 )
