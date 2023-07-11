@@ -27,22 +27,23 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 	}
 
 	m.eventTypeToConstructors = map[domain.EventType]constructors{
-		domain.Ping:        m.extractPingMessage,
-		domain.Push:        m.extractPushMessage,
-		domain.PullRequest: m.extractPullRequest,
-		domain.Comment:     m.extractPullRequestComment,
+		domain.Ping:          m.extractPingMessage,
+		domain.Push:          m.extractPushMessage,
+		domain.PullRequest:   m.extractPullRequest,
+		domain.ReviewComment: m.extractPullRequestReview,
+		domain.IssueComment:  m.extractIssueComment,
 	}
 
 	return m
 }
 
-func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.MessageOut, error) {
+func (m *MessageConstructor) Parse(ctx context.Context, in domain.TicketRequest) ([]interfaces.MessageOut, error) {
 	construct, ok := m.eventTypeToConstructors[in.Payload.GetEventType()]
 	if !ok {
 		return nil, domain.ErrUnknownEventType
 	}
 
-	subs, err := m.subscriptions.GetSubscribers(context.Background(), in.TicketId)
+	subs, err := m.subscriptions.GetSubscribers(ctx, in.TicketId)
 	if err != nil {
 		return nil, errors.Wrap(err, "error obtaining subscribers from repo")
 	}
@@ -50,6 +51,10 @@ func (m *MessageConstructor) Parse(in domain.TicketRequest) ([]interfaces.Messag
 	msg, format, err := construct(in.Payload)
 	if err != nil {
 		return nil, err
+	}
+
+	if msg == "" {
+		return nil, nil
 	}
 
 	out := make([]interfaces.MessageOut, 0, len(subs))
@@ -85,33 +90,39 @@ func (m *MessageConstructor) extractPingMessage(payload domain.Payload) (string,
 func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
 	constr := constructor{}
 
-	constr.Write(assets.Push)
-	{
-		author := payload.GetAuthor()
+	commits := payload.GetCommits()
+
+	author := payload.GetAuthor()
+	proj := payload.GetProject()
+	srcBranch := payload.GetSrcBranch()
+
+	if len(commits) == 0 {
+		constr.Write(assets.Delete)
 		constr.WriteWithLink(author.Name, author.Link)
-	}
-	constr.Write(" has pushed to ")
 
-	{
-		proj := payload.GetProject()
-		constr.WriteWithLink(proj.Name, proj.Link)
-	}
-
-	{
-		srcBranch := payload.GetSrcBranch()
-		constr.Write(" to branch ")
+		constr.Write(" has deleted branch ")
 		constr.WriteWithLink(srcBranch.Name, srcBranch.Link)
+
+		constr.Write(" at project ")
+		constr.WriteWithLink(proj.Name, proj.Link)
+		return constr.String(), constr.format, nil
 	}
 
-	{
-		commits := payload.GetCommits()
-		constr.Write(" " + strconv.Itoa(len(commits)))
-		if len(commits)%10 == 1 {
-			constr.Write(" commit")
-		} else {
-			constr.Write(" commits")
-		}
+	constr.Write(assets.Push)
 
+	constr.WriteWithLink(author.Name, author.Link)
+
+	constr.Write(" has pushed to project ")
+	constr.WriteWithLink(proj.Name, proj.Link)
+
+	constr.Write(" to branch ")
+	constr.WriteWithLink(srcBranch.Name, srcBranch.Link)
+
+	constr.Write(" " + strconv.Itoa(len(commits)))
+	if len(commits)%10 == 1 {
+		constr.Write(" commit")
+	} else {
+		constr.Write(" commits")
 	}
 
 	return constr.String(), constr.format, nil
@@ -150,7 +161,33 @@ func (m *MessageConstructor) extractPullRequest(payload domain.Payload) (string,
 	return constr.String(), constr.format, nil
 }
 
-func (m *MessageConstructor) extractPullRequestComment(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+func (m *MessageConstructor) extractPullRequestReview(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	if payload.GetAction() != domain.ActionSubmitted {
+		return "", nil, nil
+	}
+
+	constr := constructor{}
+
+	constr.Write(assets.Review)
+	{
+		author := payload.GetAuthor()
+		constr.WriteWithLink(author.Name, author.Link)
+	}
+	constr.Write(" has reviewed pull request ")
+	{
+		pr := payload.GetPullRequest()
+
+		constr.WriteWithLink(pr.Name, pr.Link)
+	}
+
+	return constr.String(), constr.format, nil
+}
+
+func (m *MessageConstructor) extractIssueComment(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
+	if payload.GetAction() != domain.ActionCreated {
+		return "", nil, nil
+	}
+
 	constr := constructor{}
 
 	constr.Write(assets.Comment)
@@ -166,4 +203,5 @@ func (m *MessageConstructor) extractPullRequestComment(payload domain.Payload) (
 	}
 
 	return constr.String(), constr.format, nil
+
 }

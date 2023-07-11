@@ -64,6 +64,10 @@ type PullRequestPayload struct {
 	Sender       User         `json:"sender"`
 }
 
+func (p *PullRequestPayload) GetAction() domain.Action {
+	return domain.Action(p.Action)
+}
+
 func (p *PullRequestPayload) GetProject() domain.Project {
 	return p.Repository.ToDomain()
 }

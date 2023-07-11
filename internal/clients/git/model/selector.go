@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/pkg/errors"
-	"github.com/tidwall/gjson"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
 )
@@ -17,13 +16,10 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 		out = &PushPayload{}
 	case domain.Ping:
 		out = &PingPayload{}
-	case domain.Comment:
-		parsed := gjson.ParseBytes(payload)
-		if parsed.Get("issue").Exists() {
-			out = &PullRequestComment{}
-		} else {
-			out = &PullRequestCodeComment{}
-		}
+	case domain.ReviewComment:
+		out = &PullRequestCodeComment{}
+	case domain.IssueComment:
+		out = &PullRequestComment{}
 	case domain.PullRequest:
 		out = &PullRequestPayload{}
 	case domain.Release:
@@ -46,5 +42,6 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 	if err != nil {
 		return nil, errors.Wrap(err, "error unmarshalling payload to structure")
 	}
+
 	return out, nil
 }

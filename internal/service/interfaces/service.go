@@ -35,5 +35,5 @@ type RuleService interface {
 }
 
 type MessageConstructor interface {
-	Parse(request domain.TicketRequest) ([]interfaces.MessageOut, error)
+	Parse(ctx context.Context, request domain.TicketRequest) ([]interfaces.MessageOut, error)
 }

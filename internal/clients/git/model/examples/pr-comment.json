@@ -1,14 +1,8 @@
 {
-  "action": "created",
-  "comment": {
-    "url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/comments/1210814385",
-    "pull_request_review_id": 1451804104,
-    "id": 1210814385,
-    "node_id": "PRRC_kwDOJO1bYs5IK4-x",
-    "diff_hunk": "@@ -23,6 +24,7 @@ require (\n \tgithub.com/jackc/pgpassfile v1.0.0 // indirect\n \tgithub.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect\n \tgithub.com/kr/text v0.2.0 // indirect",
-    "path": "go.mod",
-    "commit_id": "be0943453c01af7f421917be831bdcb7398ce924",
-    "original_commit_id": "be0943453c01af7f421917be831bdcb7398ce924",
+  "action": "submitted",
+  "review": {
+    "id": 1522989362,
+    "node_id": "PRR_kwDOJO1bYs5axvky",
     "user": {
       "login": "AlexSkilled",
       "id": 48599701,
@@ -29,57 +23,34 @@
       "type": "User",
       "site_admin": false
     },
-    "body": "code comment",
-    "created_at": "2023-05-30T20:54:29Z",
-    "updated_at": "2023-05-30T20:54:29Z",
-    "html_url": "https://github.com/Red-Sock/gitM8/pull/21#discussion_r1210814385",
-    "pull_request_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21",
+    "body": "",
+    "commit_id": "b11aab6596277c6df553cb5407cf5dbac65ae84b",
+    "submitted_at": "2023-07-10T20:26:25Z",
+    "state": "commented",
+    "html_url": "https://github.com/Red-Sock/gitM8/pull/25#pullrequestreview-1522989362",
+    "pull_request_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25",
     "author_association": "CONTRIBUTOR",
     "_links": {
-      "self": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/comments/1210814385"
-      },
       "html": {
-        "href": "https://github.com/Red-Sock/gitM8/pull/21#discussion_r1210814385"
+        "href": "https://github.com/Red-Sock/gitM8/pull/25#pullrequestreview-1522989362"
       },
       "pull_request": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25"
       }
-    },
-    "reactions": {
-      "url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/comments/1210814385/reactions",
-      "total_count": 0,
-      "+1": 0,
-      "-1": 0,
-      "laugh": 0,
-      "hooray": 0,
-      "confused": 0,
-      "heart": 0,
-      "rocket": 0,
-      "eyes": 0
-    },
-    "start_line": null,
-    "original_start_line": null,
-    "start_side": null,
-    "line": 26,
-    "original_line": 26,
-    "side": "RIGHT",
-    "original_position": 11,
-    "position": 11,
-    "subject_type": "line"
+    }
   },
   "pull_request": {
-    "url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21",
-    "id": 1371118288,
-    "node_id": "PR_kwDOJO1bYs5RuZrQ",
-    "html_url": "https://github.com/Red-Sock/gitM8/pull/21",
-    "diff_url": "https://github.com/Red-Sock/gitM8/pull/21.diff",
-    "patch_url": "https://github.com/Red-Sock/gitM8/pull/21.patch",
-    "issue_url": "https://api.github.com/repos/Red-Sock/gitM8/issues/21",
-    "number": 21,
+    "url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25",
+    "id": 1428182277,
+    "node_id": "PR_kwDOJO1bYs5VIFUF",
+    "html_url": "https://github.com/Red-Sock/gitM8/pull/25",
+    "diff_url": "https://github.com/Red-Sock/gitM8/pull/25.diff",
+    "patch_url": "https://github.com/Red-Sock/gitM8/pull/25.patch",
+    "issue_url": "https://api.github.com/repos/Red-Sock/gitM8/issues/25",
+    "number": 25,
     "state": "open",
     "locked": false,
-    "title": "RELEASE OF GITM-9",
+    "title": "RELEASE OF GITM-7",
     "user": {
       "login": "github-actions[bot]",
       "id": 41898282,
@@ -100,12 +71,12 @@
       "type": "Bot",
       "site_admin": false
     },
-    "body": "Created by Github action. \\\n      [GITM-9](https://redsock.youtrack.cloud/issue/GITM-9)",
-    "created_at": "2023-05-30T20:50:47Z",
-    "updated_at": "2023-05-30T20:54:29Z",
+    "body": "Created by Github action. \\\n      [GITM-7](https://redsock.youtrack.cloud/issue/GITM-7)",
+    "created_at": "2023-07-10T20:15:50Z",
+    "updated_at": "2023-07-10T20:26:25Z",
     "closed_at": null,
     "merged_at": null,
-    "merge_commit_sha": "ca05f971a94669594d791b81adfda4cd1c481ec8",
+    "merge_commit_sha": "142283e577a7659654116ae2d8566ee11b3fb8e4",
     "assignee": null,
     "assignees": [
 
@@ -121,15 +92,15 @@
     ],
     "milestone": null,
     "draft": false,
-    "commits_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21/commits",
-    "review_comments_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21/comments",
+    "commits_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25/commits",
+    "review_comments_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25/comments",
     "review_comment_url": "https://api.github.com/repos/Red-Sock/gitM8/pulls/comments{/number}",
-    "comments_url": "https://api.github.com/repos/Red-Sock/gitM8/issues/21/comments",
-    "statuses_url": "https://api.github.com/repos/Red-Sock/gitM8/statuses/be0943453c01af7f421917be831bdcb7398ce924",
+    "comments_url": "https://api.github.com/repos/Red-Sock/gitM8/issues/25/comments",
+    "statuses_url": "https://api.github.com/repos/Red-Sock/gitM8/statuses/b11aab6596277c6df553cb5407cf5dbac65ae84b",
     "head": {
-      "label": "Red-Sock:GITM-9",
-      "ref": "GITM-9",
-      "sha": "be0943453c01af7f421917be831bdcb7398ce924",
+      "label": "Red-Sock:GITM-7",
+      "ref": "GITM-7",
+      "sha": "b11aab6596277c6df553cb5407cf5dbac65ae84b",
       "user": {
         "login": "Red-Sock",
         "id": 112735332,
@@ -218,13 +189,13 @@
         "deployments_url": "https://api.github.com/repos/Red-Sock/gitM8/deployments",
         "created_at": "2023-03-27T10:34:07Z",
         "updated_at": "2023-03-31T18:20:01Z",
-        "pushed_at": "2023-05-30T20:50:47Z",
+        "pushed_at": "2023-07-10T20:15:51Z",
         "git_url": "git://github.com/Red-Sock/gitM8.git",
         "ssh_url": "git@github.com:Red-Sock/gitM8.git",
         "clone_url": "https://github.com/Red-Sock/gitM8.git",
         "svn_url": "https://github.com/Red-Sock/gitM8",
         "homepage": null,
-        "size": 233,
+        "size": 280,
         "stargazers_count": 0,
         "watchers_count": 0,
         "language": "Go",
@@ -267,7 +238,7 @@
     "base": {
       "label": "Red-Sock:dev",
       "ref": "dev",
-      "sha": "956a5de6e0b3d950364810aacf4fd2241f18d871",
+      "sha": "dc2358a29723c85e4c0360b83600d95ebd0ae88b",
       "user": {
         "login": "Red-Sock",
         "id": 112735332,
@@ -356,13 +327,13 @@
         "deployments_url": "https://api.github.com/repos/Red-Sock/gitM8/deployments",
         "created_at": "2023-03-27T10:34:07Z",
         "updated_at": "2023-03-31T18:20:01Z",
-        "pushed_at": "2023-05-30T20:50:47Z",
+        "pushed_at": "2023-07-10T20:15:51Z",
         "git_url": "git://github.com/Red-Sock/gitM8.git",
         "ssh_url": "git@github.com:Red-Sock/gitM8.git",
         "clone_url": "https://github.com/Red-Sock/gitM8.git",
         "svn_url": "https://github.com/Red-Sock/gitM8",
         "homepage": null,
-        "size": 233,
+        "size": 280,
         "stargazers_count": 0,
         "watchers_count": 0,
         "language": "Go",
@@ -404,28 +375,28 @@
     },
     "_links": {
       "self": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25"
       },
       "html": {
-        "href": "https://github.com/Red-Sock/gitM8/pull/21"
+        "href": "https://github.com/Red-Sock/gitM8/pull/25"
       },
       "issue": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/issues/21"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/issues/25"
       },
       "comments": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/issues/21/comments"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/issues/25/comments"
       },
       "review_comments": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21/comments"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25/comments"
       },
       "review_comment": {
         "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/comments{/number}"
       },
       "commits": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/21/commits"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/pulls/25/commits"
       },
       "statuses": {
-        "href": "https://api.github.com/repos/Red-Sock/gitM8/statuses/be0943453c01af7f421917be831bdcb7398ce924"
+        "href": "https://api.github.com/repos/Red-Sock/gitM8/statuses/b11aab6596277c6df553cb5407cf5dbac65ae84b"
       }
     },
     "author_association": "NONE",
@@ -500,13 +471,13 @@
     "deployments_url": "https://api.github.com/repos/Red-Sock/gitM8/deployments",
     "created_at": "2023-03-27T10:34:07Z",
     "updated_at": "2023-03-31T18:20:01Z",
-    "pushed_at": "2023-05-30T20:50:47Z",
+    "pushed_at": "2023-07-10T20:15:51Z",
     "git_url": "git://github.com/Red-Sock/gitM8.git",
     "ssh_url": "git@github.com:Red-Sock/gitM8.git",
     "clone_url": "https://github.com/Red-Sock/gitM8.git",
     "svn_url": "https://github.com/Red-Sock/gitM8",
     "homepage": null,
-    "size": 233,
+    "size": 280,
     "stargazers_count": 0,
     "watchers_count": 0,
     "language": "Go",

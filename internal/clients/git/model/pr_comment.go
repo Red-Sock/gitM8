@@ -52,6 +52,10 @@ type PullRequestComment struct {
 	Sender       User         `json:"sender"`
 }
 
+func (p *PullRequestComment) GetAction() domain.Action {
+	return domain.Action(p.Action)
+}
+
 func (p *PullRequestComment) GetProject() domain.Project {
 	return p.Repository.ToDomain()
 }
@@ -81,5 +85,5 @@ func (p *PullRequestComment) GetCommitsAmount() int {
 }
 
 func (p *PullRequestComment) GetEventType() domain.EventType {
-	return domain.Comment
+	return domain.IssueComment
 }
