@@ -14,8 +14,9 @@ const (
 	Push
 	// Ping - healthcheck webhook
 	Ping
-	// Comment - comment in pr(not connected to code, connected to code and review (summary of comments to code))
-	Comment
+	// ReviewComment - comment in pr(not connected to code, connected to code and review (summary of comments to code))
+	ReviewComment
+	IssueComment
 
 	// PullRequest - pr connected action
 	PullRequest
@@ -36,7 +37,7 @@ func (w *EventType) String() string {
 	switch *w {
 	case Ping:
 		return "Webhook healthcheck"
-	case Comment:
+	case ReviewComment:
 		return "Pull request comments"
 	case PullRequest:
 		return "Pull request actions"
@@ -59,9 +60,9 @@ var githubEventsToDomain = map[string]EventType{
 	"ping": Ping,
 	"push": Push,
 
-	"pull_request":                PullRequest,
-	"issue_comment":               Comment,
-	"pull_request_review_comment": Comment,
+	"pull_request":        PullRequest,
+	"pull_request_review": ReviewComment,
+	"issue_comment":       IssueComment,
 
 	"release": Release,
 
@@ -74,7 +75,7 @@ func GetEventTypes() []EventType {
 	return []EventType{
 		Push,
 		Ping,
-		Comment,
+		ReviewComment,
 		PullRequest,
 		Release,
 		WorkflowJob,

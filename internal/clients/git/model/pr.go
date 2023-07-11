@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strings"
 	"time"
 
 	"github.com/Red-Sock/gitm8/internal/service/domain"
@@ -64,6 +65,10 @@ type PullRequestPayload struct {
 	Sender       User         `json:"sender"`
 }
 
+func (p *PullRequestPayload) GetAction() domain.Action {
+	return domain.Action(p.Action)
+}
+
 func (p *PullRequestPayload) GetProject() domain.Project {
 	return p.Repository.ToDomain()
 }
@@ -81,6 +86,14 @@ func (p *PullRequestPayload) GetPullRequest() domain.PullRequestPayload {
 		StateStr: p.PullRequest.State,
 		Name:     p.PullRequest.Title,
 		Link:     p.PullRequest.HtmlUrl,
+		Base: domain.Branch{
+			Name: p.PullRequest.Head.Ref,
+			Link: strings.Join([]string{p.PullRequest.Head.Repo.HtmlUrl, p.PullRequest.Head.Ref}, ","),
+		},
+		Target: domain.Branch{
+			Name: p.PullRequest.Head.Ref,
+			Link: strings.Join([]string{p.PullRequest.Base.Repo.HtmlUrl, p.PullRequest.Base.Ref}, ","),
+		},
 	}
 
 	return pr

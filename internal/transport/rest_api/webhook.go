@@ -26,15 +26,21 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 
 	ticket.OwnerId, ticket.Uri, err = extractWebhookPath(req.URL.Path)
 	if err != nil {
-		logrus.Errorf("error extracting webhook path from url: %s", err)
+		err = errors.Wrap(err, "error extracting webhook path from url:")
+		logrus.Error(err)
+
 		rw.WriteHeader(http.StatusBadRequest)
+		_, _ = rw.Write([]byte(err.Error()))
 		return
 	}
 
 	payload, err := io.ReadAll(req.Body)
 	if err != nil {
-		logrus.Errorf("error reading webhook body: %s", err)
+		err = errors.Wrap(err, "error reading webhook body: %s")
+		logrus.Error(err)
+
 		rw.WriteHeader(http.StatusBadRequest)
+		_, _ = rw.Write([]byte(err.Error()))
 		return
 	}
 	switch {
@@ -44,8 +50,11 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 
 		wh, err := ghmodel.SelectModel(eventType, payload)
 		if err != nil {
-			logrus.Errorf("error selecting proper webhook model: %s", err)
+			err = errors.Wrap(err, "error selecting proper webhook model")
+			logrus.Error(err)
+
 			rw.WriteHeader(http.StatusBadRequest)
+			_, _ = rw.Write([]byte(err.Error()))
 			return
 		}
 
