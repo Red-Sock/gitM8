@@ -45,6 +45,8 @@ type PullRequestPayload struct {
 	StateStr string
 	Name     string
 	Link     string
+	Base     Branch
+	Target   Branch
 }
 
 func (p *PullRequestPayload) GetState() PullRequestState {
