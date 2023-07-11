@@ -143,6 +143,16 @@ func (m *MessageConstructor) extractPullRequest(payload domain.Payload) (string,
 		case domain.PullRequestStateOpened:
 			constr.Write(" has opened a pull request ")
 			constr.WriteWithLink("\""+pr.Name+"\"", pr.Link)
+
+			constr.Write(" from branch ")
+			constr.WriteWithLink(pr.Base.Name, pr.Base.Link)
+
+			constr.Write(" to branch ")
+			constr.WriteWithLink(pr.Target.Name, pr.Target.Link)
+		case domain.PullRequestStateClosed:
+			constr.Write(" has closed a pull request")
+			constr.WriteWithLink("\""+pr.Name+"\"", pr.Link)
+
 		default:
 			constr.Write(" has performed something connected to pull request. And we don't know what it is: " + pr.StateStr)
 			return constr.String(), constr.format, nil

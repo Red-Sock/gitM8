@@ -38,18 +38,24 @@ type PullRequestState int
 const (
 	PullRequestStateUnknown PullRequestState = iota
 	PullRequestStateOpened
+	PullRequestStateClosed
 )
 
 type PullRequestPayload struct {
 	StateStr string
 	Name     string
 	Link     string
+	Base     Branch
+	Target   Branch
 }
 
 func (p *PullRequestPayload) GetState() PullRequestState {
 	switch p.StateStr {
 	case "open":
 		return PullRequestStateOpened
+	case "closed":
+		return PullRequestStateClosed
+
 	default:
 		return PullRequestStateUnknown
 	}
