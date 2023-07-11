@@ -12,6 +12,13 @@ X-GitHub-Event: push
 
 < push.json
 
+### Delete branch
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: push
+
+< delete-branch.json
+
 ### Open pull request
 {{local}}/
 Content-Type: application/json
