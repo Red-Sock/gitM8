@@ -68,7 +68,9 @@ type Commit struct {
 type Action string
 
 const (
-	ActionUnknown   = "unknown"
-	ActionSubmitted = "submitted"
-	ActionCreated   = "created"
+	ActionUnknown      = "unknown"
+	ActionSubmitted    = "submitted"
+	ActionCreated      = "created"
+	ActionOpened       = "opened"
+	ActionSynchronized = "synchronize"
 )
