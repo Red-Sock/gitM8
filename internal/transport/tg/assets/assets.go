@@ -16,6 +16,7 @@ const (
 	Push        = "⬆"
 	Ping        = "🏓"
 	PullRequest = "🔀"
+	Delete      = "🚮"
 
 	Comment = "💬"
 	Review  = "🔍"

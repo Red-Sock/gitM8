@@ -90,33 +90,39 @@ func (m *MessageConstructor) extractPingMessage(payload domain.Payload) (string,
 func (m *MessageConstructor) extractPushMessage(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
 	constr := constructor{}
 
-	constr.Write(assets.Push)
-	{
-		author := payload.GetAuthor()
+	commits := payload.GetCommits()
+
+	author := payload.GetAuthor()
+	proj := payload.GetProject()
+	srcBranch := payload.GetSrcBranch()
+
+	if len(commits) == 0 {
+		constr.Write(assets.Delete)
 		constr.WriteWithLink(author.Name, author.Link)
-	}
-	constr.Write(" has pushed to ")
 
-	{
-		proj := payload.GetProject()
-		constr.WriteWithLink(proj.Name, proj.Link)
-	}
-
-	{
-		srcBranch := payload.GetSrcBranch()
-		constr.Write(" to branch ")
+		constr.Write(" has deleted branch ")
 		constr.WriteWithLink(srcBranch.Name, srcBranch.Link)
+
+		constr.Write(" at project ")
+		constr.WriteWithLink(proj.Name, proj.Link)
+		return constr.String(), constr.format, nil
 	}
 
-	{
-		commits := payload.GetCommits()
-		constr.Write(" " + strconv.Itoa(len(commits)))
-		if len(commits)%10 == 1 {
-			constr.Write(" commit")
-		} else {
-			constr.Write(" commits")
-		}
+	constr.Write(assets.Push)
 
+	constr.WriteWithLink(author.Name, author.Link)
+
+	constr.Write(" has pushed to project ")
+	constr.WriteWithLink(proj.Name, proj.Link)
+
+	constr.Write(" to branch ")
+	constr.WriteWithLink(srcBranch.Name, srcBranch.Link)
+
+	constr.Write(" " + strconv.Itoa(len(commits)))
+	if len(commits)%10 == 1 {
+		constr.Write(" commit")
+	} else {
+		constr.Write(" commits")
 	}
 
 	return constr.String(), constr.format, nil
