@@ -36,6 +36,10 @@ type PingPayload struct {
 	Sender     User `json:"sender"`
 }
 
+func (p *PingPayload) GetWorkflow() domain.Workflow {
+	return domain.Workflow{}
+}
+
 func (p *PingPayload) GetAction() domain.Action {
 	return domain.ActionUnknown
 }

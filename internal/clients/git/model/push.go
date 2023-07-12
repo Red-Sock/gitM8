@@ -25,6 +25,10 @@ type PushPayload struct {
 	HeadCommit   Commit       `json:"head_commit"`
 }
 
+func (p *PushPayload) GetWorkflow() domain.Workflow {
+	return domain.Workflow{}
+}
+
 func (p *PushPayload) GetAction() domain.Action {
 	return domain.ActionUnknown
 }

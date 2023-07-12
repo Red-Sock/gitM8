@@ -52,6 +52,10 @@ type PullRequestComment struct {
 	Sender       User         `json:"sender"`
 }
 
+func (p *PullRequestComment) GetWorkflow() domain.Workflow {
+	return domain.Workflow{}
+}
+
 func (p *PullRequestComment) GetAction() domain.Action {
 	return domain.Action(p.Action)
 }

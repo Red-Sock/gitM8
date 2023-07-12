@@ -39,3 +39,10 @@ Content-Type: application/json
 X-GitHub-Event: pull_request_review
 
 < pr-comment.json
+
+### Start workflow
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: workflow_run
+
+< wf_job_started.json
