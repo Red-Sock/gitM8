@@ -110,3 +110,7 @@ func (p *PullRequestPayload) GetCommitsAmount() int {
 func (p *PullRequestPayload) GetEventType() domain.EventType {
 	return domain.PullRequest
 }
+
+func (p *PullRequestPayload) GetWorkflow() domain.Workflow {
+	return domain.Workflow{}
+}

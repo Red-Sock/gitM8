@@ -20,4 +20,9 @@ const (
 
 	Comment = "💬"
 	Review  = "🔍"
+
+	Zzz       = "💤"
+	Loading   = "🌀"
+	Completed = "✅"
+	Failed    = "❌"
 )
