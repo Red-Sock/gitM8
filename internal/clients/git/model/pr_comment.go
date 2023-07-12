@@ -56,8 +56,8 @@ func (p *PullRequestComment) GetWorkflow() domain.Workflow {
 	return domain.Workflow{}
 }
 
-func (p *PullRequestComment) GetAction() domain.Action {
-	return domain.Action(p.Action)
+func (p *PullRequestComment) GetAction() string {
+	return p.Action
 }
 
 func (p *PullRequestComment) GetProject() domain.Project {
@@ -90,4 +90,8 @@ func (p *PullRequestComment) GetCommitsAmount() int {
 
 func (p *PullRequestComment) GetEventType() domain.EventType {
 	return domain.IssueComment
+}
+
+func (p *PullRequestComment) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
 }

@@ -60,3 +60,10 @@ Content-Type: application/json
 X-GitHub-Event: workflow_run
 
 < workflow_run_completed_failure.json
+
+### Publish release
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: release
+
+< release-published.json

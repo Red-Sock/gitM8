@@ -65,8 +65,8 @@ type PullRequestPayload struct {
 	Sender       User         `json:"sender"`
 }
 
-func (p *PullRequestPayload) GetAction() domain.Action {
-	return domain.Action(p.Action)
+func (p *PullRequestPayload) GetAction() string {
+	return p.Action
 }
 
 func (p *PullRequestPayload) GetProject() domain.Project {
@@ -91,7 +91,7 @@ func (p *PullRequestPayload) GetPullRequest() domain.PullRequestPayload {
 			Link: strings.Join([]string{p.PullRequest.Head.Repo.HtmlUrl, p.PullRequest.Head.Ref}, ","),
 		},
 		Target: domain.Branch{
-			Name: p.PullRequest.Head.Ref,
+			Name: p.PullRequest.Base.Ref,
 			Link: strings.Join([]string{p.PullRequest.Base.Repo.HtmlUrl, p.PullRequest.Base.Ref}, ","),
 		},
 	}
@@ -113,4 +113,8 @@ func (p *PullRequestPayload) GetEventType() domain.EventType {
 
 func (p *PullRequestPayload) GetWorkflow() domain.Workflow {
 	return domain.Workflow{}
+}
+
+func (p *PullRequestPayload) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
 }

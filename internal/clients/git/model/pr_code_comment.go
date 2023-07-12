@@ -102,12 +102,16 @@ type PullRequestCodeComment struct {
 	Sender       User         `json:"sender"`
 }
 
+func (p *PullRequestCodeComment) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
+}
+
 func (p *PullRequestCodeComment) GetWorkflow() domain.Workflow {
 	return domain.Workflow{}
 }
 
-func (p *PullRequestCodeComment) GetAction() domain.Action {
-	return domain.Action(p.Action)
+func (p *PullRequestCodeComment) GetAction() string {
+	return p.Action
 }
 
 func (p *PullRequestCodeComment) GetProject() domain.Project {

@@ -29,7 +29,7 @@ func (p *PushPayload) GetWorkflow() domain.Workflow {
 	return domain.Workflow{}
 }
 
-func (p *PushPayload) GetAction() domain.Action {
+func (p *PushPayload) GetAction() string {
 	return domain.ActionUnknown
 }
 
@@ -69,4 +69,8 @@ func (p *PushPayload) GetCommits() []domain.Commit {
 		})
 	}
 	return out
+}
+
+func (p *PushPayload) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
 }

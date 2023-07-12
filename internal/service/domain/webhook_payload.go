@@ -3,7 +3,7 @@ package domain
 type Payload interface {
 	GetEventType() EventType
 
-	GetAction() Action
+	GetAction() string
 	// GetProject - obtain project in which event has happened
 	GetProject() Project
 	// GetAuthor - obtain user who caused action
@@ -18,6 +18,8 @@ type Payload interface {
 	GetCommitsAmount() int
 	// GetWorkflow - returns pipeline data (WorkflowRun)
 	GetWorkflow() Workflow
+	// GetRelease - returns release information (Release)
+	GetRelease() ReleasePayload
 }
 
 type Project struct {
@@ -40,6 +42,11 @@ type Workflow struct {
 	Link   string
 	Status WorkflowStatus
 	Result WorkflowResult
+}
+
+type ReleasePayload struct {
+	Name string
+	Link string
 }
 
 type PullRequestState int
@@ -74,14 +81,19 @@ type Commit struct {
 	Author Author
 }
 
-type Action string
-
 const (
-	ActionUnknown      Action = "unknown"
-	ActionSubmitted    Action = "submitted"
-	ActionCreated      Action = "created"
-	ActionOpened       Action = "opened"
-	ActionSynchronized Action = "synchronize"
+	ActionUnknown      = "unknown"
+	ActionSubmitted    = "submitted"
+	ActionCreated      = "created"
+	ActionOpened       = "opened"
+	ActionSynchronized = "synchronize"
+
+	Deleted     = "deleted"
+	Edited      = "edited"
+	PreReleased = "prereleased"
+	Published   = "published"
+	Released    = "released"
+	UnPublished = "unpublished"
 )
 
 type WorkflowStatus string
@@ -94,6 +106,6 @@ const (
 type WorkflowResult string
 
 const (
-	WorkflowResultSuccess = "success"
-	WorkflowResultFailure = "failure"
+	WorkflowResultSuccess WorkflowResult = "success"
+	WorkflowResultFailure WorkflowResult = "failure"
 )

@@ -19,6 +19,7 @@ type MessageConstructor struct {
 	eventTypeToConstructors map[domain.EventType]constructors
 
 	workflowConstructor
+	releaseConstructor
 }
 
 func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstructor {
@@ -33,6 +34,7 @@ func NewMessageConstructor(repository dataInterfaces.Repository) *MessageConstru
 		domain.ReviewComment: m.extractPullRequestReview,
 		domain.IssueComment:  m.extractIssueComment,
 		domain.WorkflowRun:   m.extractWorkflowRun,
+		domain.Release:       m.extractRelease,
 	}
 
 	return m
