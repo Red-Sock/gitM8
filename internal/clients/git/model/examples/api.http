@@ -45,4 +45,18 @@ X-GitHub-Event: pull_request_review
 Content-Type: application/json
 X-GitHub-Event: workflow_run
 
-< wf_job_started.json
+< workflow_run_in_progress.json
+
+### Complete workflow successfully
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: workflow_run
+
+< workflow_run_completed_success.json
+
+### Complete workflow with failure
+{{local}}/
+Content-Type: application/json
+X-GitHub-Event: workflow_run
+
+< workflow_run_completed_failure.json

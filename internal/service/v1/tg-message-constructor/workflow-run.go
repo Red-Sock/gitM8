@@ -55,7 +55,7 @@ func (w *workflowConstructor) extractWorkflowCompleted(payload domain.Payload) (
 		constr.Write(assets.Failed)
 	}
 
-	constr.Write("Job ")
+	constr.Write("Pipeline ")
 	{
 		wf := payload.GetWorkflow()
 		constr.WriteWithLink(wf.Name, wf.Link)
