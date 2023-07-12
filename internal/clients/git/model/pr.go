@@ -91,7 +91,7 @@ func (p *PullRequestPayload) GetPullRequest() domain.PullRequestPayload {
 			Link: strings.Join([]string{p.PullRequest.Head.Repo.HtmlUrl, p.PullRequest.Head.Ref}, ","),
 		},
 		Target: domain.Branch{
-			Name: p.PullRequest.Head.Ref,
+			Name: p.PullRequest.Base.Ref,
 			Link: strings.Join([]string{p.PullRequest.Base.Repo.HtmlUrl, p.PullRequest.Base.Ref}, ","),
 		},
 	}
