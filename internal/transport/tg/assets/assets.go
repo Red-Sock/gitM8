@@ -25,4 +25,8 @@ const (
 	Loading   = "🌀"
 	Completed = "✅"
 	Failed    = "❌"
+	Package   = "📨"
+	Dunno     = "👽"
+
+	Party = "🎉"
 )

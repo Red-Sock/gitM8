@@ -40,7 +40,7 @@ func (p *PingPayload) GetWorkflow() domain.Workflow {
 	return domain.Workflow{}
 }
 
-func (p *PingPayload) GetAction() domain.Action {
+func (p *PingPayload) GetAction() string {
 	return domain.ActionUnknown
 }
 
@@ -70,4 +70,8 @@ func (p *PingPayload) GetCommitsAmount() int {
 
 func (p *PingPayload) GetEventType() domain.EventType {
 	return domain.Ping
+}
+
+func (p *PingPayload) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
 }

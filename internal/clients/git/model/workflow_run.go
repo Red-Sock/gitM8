@@ -255,8 +255,8 @@ func (w *WorkflowPayload) GetWorkflow() domain.Workflow {
 	}
 }
 
-func (w *WorkflowPayload) GetAction() domain.Action {
-	return domain.Action(w.Action)
+func (w *WorkflowPayload) GetAction() string {
+	return w.Action
 }
 
 func (w *WorkflowPayload) GetProject() domain.Project {
@@ -285,4 +285,8 @@ func (w *WorkflowPayload) GetCommitsAmount() int {
 
 func (w *WorkflowPayload) GetEventType() domain.EventType {
 	return domain.WorkflowRun
+}
+
+func (w *WorkflowPayload) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
 }

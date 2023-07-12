@@ -65,8 +65,8 @@ type PullRequestPayload struct {
 	Sender       User         `json:"sender"`
 }
 
-func (p *PullRequestPayload) GetAction() domain.Action {
-	return domain.Action(p.Action)
+func (p *PullRequestPayload) GetAction() string {
+	return p.Action
 }
 
 func (p *PullRequestPayload) GetProject() domain.Project {
@@ -113,4 +113,8 @@ func (p *PullRequestPayload) GetEventType() domain.EventType {
 
 func (p *PullRequestPayload) GetWorkflow() domain.Workflow {
 	return domain.Workflow{}
+}
+
+func (p *PullRequestPayload) GetRelease() domain.ReleasePayload {
+	return domain.ReleasePayload{}
 }

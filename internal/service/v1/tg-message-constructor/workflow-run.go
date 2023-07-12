@@ -25,6 +25,7 @@ func (m *MessageConstructor) extractWorkflowRun(payload domain.Payload) (string,
 	}
 
 }
+
 func (w *workflowConstructor) extractWorkflowInProgress(payload domain.Payload) (string, []tgbotapi.MessageEntity, error) {
 	constr := constructor{}
 
