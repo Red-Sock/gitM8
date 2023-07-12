@@ -29,8 +29,7 @@ func SelectModel(eventType domain.EventType, payload []byte) (domain.Payload, er
 		// TODO GITM-15
 		return nil, domain.ErrUnknownEventType
 	case domain.WorkflowRun:
-		// TODO GITM-16
-		return nil, domain.ErrUnknownEventType
+		out = &WorkflowPayload{}
 	case domain.WorkflowManualStart:
 		// TODO GITM-17
 		return nil, domain.ErrUnknownEventType

@@ -6,7 +6,10 @@ import (
 
 type EventType int
 
-var ErrUnknownEventType = errors.New("unknown event type")
+var (
+	ErrUnknownEventType      = errors.New("unknown event type")
+	ErrInvalidActionForEvent = errors.New("invalid action for event")
+)
 
 const (
 	Invalid EventType = iota

@@ -61,15 +61,19 @@ func (s *Server) Webhook(rw http.ResponseWriter, req *http.Request) {
 		ticket.Payload = wh
 		ticket.RepoType = domain.RepoTypeGithub
 	default:
-		logrus.Errorf("error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
+		err = fmt.Errorf("error handling webhook: %s", fmt.Sprintf("no known webhook header is provided %v", req.Header))
+		logrus.Error(err)
 		rw.WriteHeader(http.StatusBadRequest)
+		_, _ = rw.Write([]byte(err.Error()))
 		return
 	}
 
 	err = s.services.WebhookService().HandleWebhook(ticket)
 	if err != nil {
-		logrus.Errorf("error handling webhook %s", err.Error())
+		err = errors.Wrap(err, "error handling webhook ")
+		logrus.Error(err)
 		rw.WriteHeader(http.StatusInternalServerError)
+		_, _ = rw.Write([]byte(err.Error()))
 		return
 	}
 	_, _ = rw.Write([]byte(`OK`))

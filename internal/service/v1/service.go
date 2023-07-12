@@ -6,6 +6,7 @@ import (
 	"github.com/Red-Sock/gitm8/internal/config"
 	"github.com/Red-Sock/gitm8/internal/repository/pg"
 	"github.com/Red-Sock/gitm8/internal/service/interfaces"
+	"github.com/Red-Sock/gitm8/internal/service/v1/tg-message-constructor"
 )
 
 type Service struct {
@@ -21,7 +22,7 @@ func NewService(ctx context.Context, cfg *config.Config, chat interfaces.Chat) (
 		return nil, err
 	}
 
-	messagingConstructor := NewMessageConstructor(pgRepo)
+	messagingConstructor := tg_message_constructor.NewMessageConstructor(pgRepo)
 
 	return &Service{
 		regSrv:               NewRegistrationService(pgRepo, cfg),

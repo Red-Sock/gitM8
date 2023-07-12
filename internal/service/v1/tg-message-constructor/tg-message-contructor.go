@@ -1,9 +1,10 @@
-package v1
+package tg_message_constructor
 
 import (
+	"unicode/utf16"
+
 	"github.com/Red-Sock/go_tg/model/response"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/mattn/go-runewidth"
 	_ "github.com/mattn/go-runewidth"
 )
 
@@ -14,9 +15,13 @@ type constructor struct {
 }
 
 func (c *constructor) Write(text string) {
-
-	c.idx += runewidth.StringWidth(text)
+	c.idx += len(utf16.Encode([]rune(text)))
 	c.text = append(c.text, []rune(text)...)
+}
+
+func (c *constructor) Writeln(text string) {
+	text = "\n" + text
+	c.Write(text)
 }
 
 func (c *constructor) WriteWithFormat(text, format string) {

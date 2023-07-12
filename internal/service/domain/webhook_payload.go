@@ -16,6 +16,8 @@ type Payload interface {
 	GetCommits() []Commit
 	// GetCommitsAmount - returns amount of commits (PullRequest)
 	GetCommitsAmount() int
+	// GetWorkflow - returns pipeline data (WorkflowRun)
+	GetWorkflow() Workflow
 }
 
 type Project struct {
@@ -31,6 +33,13 @@ type Author struct {
 type Branch struct {
 	Name string
 	Link string
+}
+
+type Workflow struct {
+	Name   string
+	Link   string
+	Status WorkflowStatus
+	Result WorkflowResult
 }
 
 type PullRequestState int
@@ -68,9 +77,23 @@ type Commit struct {
 type Action string
 
 const (
-	ActionUnknown      = "unknown"
-	ActionSubmitted    = "submitted"
-	ActionCreated      = "created"
-	ActionOpened       = "opened"
-	ActionSynchronized = "synchronize"
+	ActionUnknown      Action = "unknown"
+	ActionSubmitted    Action = "submitted"
+	ActionCreated      Action = "created"
+	ActionOpened       Action = "opened"
+	ActionSynchronized Action = "synchronize"
+)
+
+type WorkflowStatus string
+
+const (
+	WorkflowStatusInProgress WorkflowStatus = "in_progress"
+	WorkflowStatusCompleted  WorkflowStatus = "completed"
+)
+
+type WorkflowResult string
+
+const (
+	WorkflowResultSuccess = "success"
+	WorkflowResultFailure = "failure"
 )
